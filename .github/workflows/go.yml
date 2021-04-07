@@ -3,8 +3,8 @@ name: GO
 on: [push]
 
 jobs:
-  LINT:
-    name: LINT
+  GO:
+    name: GO
     runs-on: ubuntu-latest
     steps:
     - name: 1 - CHECKOUT
