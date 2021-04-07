@@ -1,4 +1,4 @@
-name: PYTHON
+name: GO
 
 on: [push]
 
@@ -10,16 +10,15 @@ jobs:
     - name: 1 - CHECKOUT
       uses: actions/checkout@v2
 
-    - name: 2 - SETUP PYTHON@3.8
-      uses: actions/setup-python@v1
+    - name: 2 - SETUP GO@1.15
+      uses:  actions/setup-go@v1
       with:
-        python-version: 3.8
+          go-version: 1.15
 
-    - name: 3 - INSTALL
+    - name: 3 - BUILD
       run: |
-        python -m pip install --upgrade pip
-        pip install pylint
+        go build -v ./...
         
     - name: 4 - LINT
       run: |
-        pylint `ls -R|grep .py$|xargs`
+        gofmt -s -w -l .
