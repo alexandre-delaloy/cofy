@@ -1,0 +1,25 @@
+name: GO
+
+on: [push]
+
+jobs:
+  GO:
+    name: GO
+    runs-on: ubuntu-latest
+    steps:
+    - name: 1 - CHECKOUT
+      uses: actions/checkout@v2
+
+    - name: 2 - SETUP GO@1.15
+      uses:  actions/setup-go@v1
+      with:
+          go-version: 1.15
+
+    - name: 3 - BUILD
+      run: |
+        cd api ; go build -v ./... ; cd -
+        cd app ; go build -v ./... ; cd -
+        
+    - name: 4 - LINT
+      run: |
+        gofmt -s -w -l .
