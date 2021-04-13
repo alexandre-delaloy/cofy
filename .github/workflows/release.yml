@@ -22,9 +22,8 @@ jobs:
         if: github.ref != 'refs/heads/main'
         run: exit 1
 
-  DOCKER:
-    name: DOCKER
-    needs: [SETUP-ENV]
+  DOCKER-APP:
+    name: DOCKER APP
     runs-on: ubuntu-latest
     steps:
       - name: 1 - CHECKOUT
@@ -35,8 +34,28 @@ jobs:
         with:
           username: ${{ github.actor }}
           password: ${{ secrets.GPAT }}
+          workdir: app/
+          dockerfile: app/Dockerfile
           registry: docker.pkg.github.com
-          repository: blyndusk/repo-template/pyapp
+          repository: blyndusk/repo-template/cofy/cofy_app
+          tags: "${{ github.event.inputs.image_version }}"
+
+  DOCKER-API:
+    name: DOCKER API
+    runs-on: ubuntu-latest
+    steps:
+      - name: 1 - CHECKOUT
+        uses: actions/checkout@v2
+
+      - name: 2 - BUILD + PUSH DOCKER IMG TO GITHUB PACKAGE REGISTRY
+        uses: docker/build-push-action@v1
+        with:
+          username: ${{ github.actor }}
+          password: ${{ secrets.GPAT }}
+          workdir: api/
+          dockerfile: api/Dockerfile
+          registry: docker.pkg.github.com
+          repository: blyndusk/repo-template/cofy/cofy_api
           tags: "${{ github.event.inputs.image_version }}"
 
   RELEASE:

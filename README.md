@@ -1,16 +1,16 @@
 # Cofy
 
-<!-- [![RELEASE](https://img.shields.io/github/v/release/blyndusk/cofy)](https://github.com/blyndusk/cofy/releases)
-[![RELEASE DATE](https://img.shields.io/github/release-date/blyndusk/cofy)](https://github.com/blyndusk/cofy/commits/main) -->
+[![RELEASE](https://img.shields.io/github/v/release/blyndusk/cofy)](https://github.com/blyndusk/cofy/releases)
+[![RELEASE DATE](https://img.shields.io/github/release-date/blyndusk/cofy)](https://github.com/blyndusk/cofy/commits/main)
 [![ISSUES](https://img.shields.io/github/issues/blyndusk/cofy)](https://github.com/blyndusk/cofy/issues)
 [![PULL REQUESTS](https://img.shields.io/github/issues-pr/blyndusk/cofy)](https://github.com/blyndusk/cofy/pulls) 
 [![LAST COMMIT](https://img.shields.io/github/last-commit/blyndusk/cofy)](https://github.com/blyndusk/cofy/commits/main)
 [![LICENSE](https://img.shields.io/github/license/blyndusk/cofy)](https://github.com/blyndusk/cofy/blob/main/LICENSE) 
 [![REPO SIZE](https://img.shields.io/github/repo-size/blyndusk/cofy)](https://github.com/blyndusk/cofy) 
-<!-- 
+
 [![DOCKER](https://github.com/blyndusk/cofy/actions/workflows/docker.yml/badge.svg)](https://github.com/blyndusk/cofy/actions/workflows/docker.yml) 
-[![PYTHON](https://github.com/blyndusk/cofy/actions/workflows/python.yml/badge.svg)](https://github.com/blyndusk/cofy/actions/workflows/python.yml)
-[![RELEASE](https://github.com/blyndusk/cofy/actions/workflows/release.yml/badge.svg)](https://github.com/blyndusk/cofy/actions/workflows/release.yml) -->
+[![GO](https://github.com/blyndusk/cofy/actions/workflows/go.yml/badge.svg)](https://github.com/blyndusk/cofy/actions/workflows/go.yml)
+[![RELEASE](https://github.com/blyndusk/cofy/actions/workflows/release.yml/badge.svg)](https://github.com/blyndusk/cofy/actions/workflows/release.yml)
 
 - [Cofy](#cofy)
   - [I - Goal](#i---goal)
