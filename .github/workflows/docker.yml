@@ -19,7 +19,7 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GPAT }}
           workdir: .docker/app
-          dockerfile: .docker/app/Dockerfile.prod
+          dockerfile: .docker/app/prod.Dockerfile
           registry: docker.pkg.github.com
           repository: blyndusk/cofy/cofy_app
           tags: "latest"
@@ -37,7 +37,7 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GPAT }}
           workdir: .docker/api
-          dockerfile: .docker/api/Dockerfile.prod
+          dockerfile: .docker/api/prod.Dockerfile
           registry: docker.pkg.github.com
           repository: blyndusk/cofy/cofy_api
           tags: "latest"
