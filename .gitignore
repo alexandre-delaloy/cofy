@@ -1,2 +1,7 @@
+tmp
+
 app/app
+app/tmp
+
 api/api
+api/tmp
