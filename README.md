@@ -8,8 +8,8 @@
 [![LICENSE](https://img.shields.io/github/license/blyndusk/cofy)](https://github.com/blyndusk/cofy/blob/main/LICENSE) 
 [![REPO SIZE](https://img.shields.io/github/repo-size/blyndusk/cofy)](https://github.com/blyndusk/cofy) 
 
-[![DOCKER](https://github.com/blyndusk/cofy/actions/workflows/docker.yml/badge.svg)](https://github.com/blyndusk/cofy/actions/workflows/docker.yml) 
 [![GO](https://github.com/blyndusk/cofy/actions/workflows/go.yml/badge.svg)](https://github.com/blyndusk/cofy/actions/workflows/go.yml)
+[![DOCKER](https://github.com/blyndusk/cofy/actions/workflows/docker.yml/badge.svg)](https://github.com/blyndusk/cofy/actions/workflows/docker.yml) 
 [![RELEASE](https://github.com/blyndusk/cofy/actions/workflows/release.yml/badge.svg)](https://github.com/blyndusk/cofy/actions/workflows/release.yml)
 
 - [Cofy](#cofy)
