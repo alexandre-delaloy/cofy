@@ -1,8 +1,11 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+)
 
 func main() {
 
-	fmt.Println("-BOT-")
+	fmt.Println("-bot-")
+	
 }
