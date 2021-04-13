@@ -19,11 +19,11 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GPAT }}
           workdir: app/
-          dockerfile: app/Dockerfile
+          dockerfile: .docker/app/Dockerfile.prod
           registry: docker.pkg.github.com
           repository: blyndusk/repo-template/cofy/cofy_app
           tags: "latest"
-          
+
   DOCKER-API:
     name: DOCKER API
     runs-on: ubuntu-latest
@@ -37,7 +37,7 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GPAT }}
           workdir: api/
-          dockerfile: api/Dockerfile
+          dockerfile: .docker/api/Dockerfile.prod
           registry: docker.pkg.github.com
           repository: blyndusk/repo-template/cofy/cofy_api
           tags: "latest"
