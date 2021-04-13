@@ -1,15 +1,17 @@
 version: "3.8"
+
 services:
   app:
+    container_name: cofy_app
     build:
       context: app/
-    container_name: cofy_app
-    volumes: 
+      dockerfile: ../.docker/app/Dockerfile.dev
+    volumes:
       - ./app:/go/src/github.com/blyndusk/cofy/app
   api:
+    container_name: cofy_api
     build:
       context: api/
-    container_name: cofy_api
-    volumes: 
+      dockerfile: ../.docker/api/Dockerfile.dev
+    volumes:
       - ./api:/go/src/github.com/blyndusk/cofy/api
-      
