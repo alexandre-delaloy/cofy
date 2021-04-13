@@ -24,6 +24,7 @@ jobs:
 
   DOCKER-APP:
     name: DOCKER APP
+    needs: [SETUP-ENV]
     runs-on: ubuntu-latest
     steps:
       - name: 1 - CHECKOUT
@@ -42,6 +43,7 @@ jobs:
 
   DOCKER-API:
     name: DOCKER API
+    needs: [SETUP-ENV]
     runs-on: ubuntu-latest
     steps:
       - name: 1 - CHECKOUT
@@ -60,7 +62,7 @@ jobs:
 
   RELEASE:
     name: RELEASE
-    needs: [DOCKER]
+    needs: [DOCKER-APP, DOCKER-API]
     runs-on: ubuntu-latest
     steps:
       - name: 1 - CHECKOUT
