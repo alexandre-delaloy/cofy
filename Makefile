@@ -20,3 +20,6 @@ logs: ## Display logs of your containers
 
 .PHONY: help
 
+
+start-app:
+	cd app ; ls ; docker build -t cofy_app  . ; docker run cofy_app

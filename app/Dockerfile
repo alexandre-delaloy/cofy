@@ -5,7 +5,7 @@ ENV GO111MODULE=on \
     GOOS=linux \
     GOARCH=amd64
 
-WORKDIR /app
+WORKDIR /go/src/github.com/blyndusk/cofy/app
 
 COPY go.mod .
 
@@ -16,7 +16,5 @@ RUN go mod download
 RUN go get -u github.com/cosmtrek/air
 
 COPY . .
-
-# EXPOSE 3000
 
 ENTRYPOINT [ "/go/bin/air" ]
