@@ -6,6 +6,7 @@ import (
 	"log"
 	"os"
 	"os/signal"
+	"regexp"
 	"syscall"
 
 	"github.com/bwmarrin/discordgo"
@@ -44,6 +45,22 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 	commands.Info(s, m, prefix)
 }
 
+func reactToCoffee(s *discordgo.Session, m *discordgo.MessageCreate) {
+
+	matched, err := regexp.MatchString(`coffee|coffe|cofee|cofe|cafe|café`, m.Content)
+	fmt.Println(matched, err)
+
+	if matched == true {
+		if m.Author.ID == s.State.User.ID {
+			return
+		}
+		s.ChannelMessageSend(m.ChannelID, "...mMmMMmmMmmmHhHHhhHhhh... ...cOoOOooOoooffEeEEeeEeee...")
+		s.MessageReactionAdd(m.ChannelID, m.ID, "☕")
+
+	}
+
+}
+
 func setupSession() {
 	Token := os.Getenv("BOT_TOKEN")
 
@@ -56,6 +73,7 @@ func setupSession() {
 
 	// Register the messageCreate func as a callback for MessageCreate events.
 	dg.AddHandler(messageCreate)
+	dg.AddHandler(reactToCoffee)
 
 	// In this example, we only care about receiving message events.
 	dg.Identify.Intents = discordgo.IntentsGuildMessages
