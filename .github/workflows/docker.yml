@@ -21,7 +21,7 @@ jobs:
           workdir: .docker/app
           dockerfile: .docker/app/Dockerfile.prod
           registry: docker.pkg.github.com
-          repository: blyndusk/repo-template/cofy/cofy_app
+          repository: blyndusk/cofy/cofy_app
           tags: "latest"
 
   DOCKER-API:
@@ -39,5 +39,5 @@ jobs:
           workdir: .docker/api
           dockerfile: .docker/api/Dockerfile.prod
           registry: docker.pkg.github.com
-          repository: blyndusk/repo-template/cofy/cofy_api
+          repository: blyndusk/cofy/cofy_api
           tags: "latest"

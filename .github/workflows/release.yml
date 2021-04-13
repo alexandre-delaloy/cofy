@@ -23,23 +23,23 @@ jobs:
         run: exit 1
 
   DOCKER-APP:
-      name: DOCKER APP
-      needs: [SETUP-ENV]
-      runs-on: ubuntu-latest
-      steps:
-        - name: 1 - CHECKOUT
-          uses: actions/checkout@v2
+    name: DOCKER APP
+    needs: [SETUP-ENV]
+    runs-on: ubuntu-latest
+    steps:
+      - name: 1 - CHECKOUT
+        uses: actions/checkout@v2
 
-        - name: 2 - BUILD + PUSH DOCKER IMG TO GITHUB PACKAGE REGISTRY
-          uses: docker/build-push-action@v1
-          with:
-            username: ${{ github.actor }}
-            password: ${{ secrets.GPAT }}
-            workdir: .docker/app
-            dockerfile: .docker/app/Dockerfile.prod
-            registry: docker.pkg.github.com
-            repository: blyndusk/repo-template/cofy/cofy_app
-            tags: "latest"
+      - name: 2 - BUILD + PUSH DOCKER IMG TO GITHUB PACKAGE REGISTRY
+        uses: docker/build-push-action@v1
+        with:
+          username: ${{ github.actor }}
+          password: ${{ secrets.GPAT }}
+          workdir: .docker/app
+          dockerfile: .docker/app/Dockerfile.prod
+          registry: docker.pkg.github.com
+          repository: blyndusk/cofy/cofy_app
+          tags: "latest"
 
   DOCKER-API:
     name: DOCKER API
@@ -57,7 +57,7 @@ jobs:
           workdir: .docker/api
           dockerfile: .docker/api/Dockerfile.prod
           registry: docker.pkg.github.com
-          repository: blyndusk/repo-template/cofy/cofy_api
+          repository: blyndusk/cofy/cofy_api
           tags: "latest"
 
   RELEASE:
