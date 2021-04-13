@@ -21,6 +21,12 @@
     - [B - Issue template](#b---issue-template)
     - [C - Branch naming convention](#c---branch-naming-convention)
     - [D - Pull request template](#d---pull-request-template)
+  - [IV - Project use](#iv---project-use)
+    - [Help](#help)
+    - [Start](#start)
+    - [Stop](#stop)
+    - [Restart](#restart)
+    - [Display logs](#display-logs)
   - [III - License](#iii---license)
 
 ## I - Goal
@@ -108,7 +114,7 @@ See [branch_naming_convention.md](.github/branch_naming_convention.md) for more 
 
 See [pull_request_template.md](.github/pull_request_template.md) for more informations.
 
-<!--
+
 ## IV - Project use
 
 ### Help
@@ -141,7 +147,7 @@ $ make restart
 $ make logs
 ```
 
--->
+
 
 ## III - License
 
