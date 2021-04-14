@@ -43,6 +43,7 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 		return
 	}
 	commands.Info(s, m, prefix)
+	commands.Profile(s, m, prefix)
 }
 
 func reactToCoffee(s *discordgo.Session, m *discordgo.MessageCreate) {
