@@ -35,15 +35,14 @@ func main() {
 }
 
 func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
-	prefix := "c!"
 
 	// Ignore all messages created by the bot itself
 	// This isn't required in this specific example but it's a good practice.
 	if m.Author.ID == s.State.User.ID {
 		return
 	}
-	commands.Info(s, m, prefix)
-	commands.Profile(s, m, prefix)
+	commands.SetCommands(s, m)
+	// commands.Profile(s, m, prefix)
 }
 
 func reactToCoffee(s *discordgo.Session, m *discordgo.MessageCreate) {

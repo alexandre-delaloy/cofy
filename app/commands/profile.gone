@@ -9,13 +9,11 @@ import (
 )
 
 func Profile(s *discordgo.Session, m *discordgo.MessageCreate, prefix string) {
-	command := "pf"
-	description := "Give informations about you"
+	commands := []string{"profile", "pf"}
+	// description := "Give informations about you"
 	response := "info"
 
-	if m.Content == fmt.Sprintf("%s %s", prefix, command) {
-		// Foo := 
-		
+	if matchCommand(s, m, prefix, commands) == true {
 		s.ChannelMessageSend(m.ChannelID, response)
 		log.Info(m.Author.AvatarURL)
 		_, err := s.ChannelMessageSendEmbed(m.ChannelID, &discordgo.MessageEmbed{
@@ -34,7 +32,17 @@ func Profile(s *discordgo.Session, m *discordgo.MessageCreate, prefix string) {
 		}
 	}
 
-	if m.Content == fmt.Sprintf("%s help %s", prefix, command) {
-		s.ChannelMessageSend(m.ChannelID, description)
-	}
+	// if m.Content == fmt.Sprintf("%s help %s", prefix, command) {
+	// 	s.ChannelMessageSend(m.ChannelID, description)
+	// }
 }
+
+
+// func matchCommand(s *discordgo.Session, m *discordgo.MessageCreate, prefix string, commands []string) bool {
+// 	for _, el := range commands {
+// 		if m.Content == fmt.Sprintf("%s %s", prefix, el) {
+// 			return true
+// 		} 
+// 	}
+// 	return false
+// }
