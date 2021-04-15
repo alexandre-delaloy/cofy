@@ -19,5 +19,5 @@ type Command struct {
 }
 
 func SetCommands(s *discordgo.Session, m *discordgo.MessageCreate) {
-	Info(s, m)
+	info(s, m)
 }
