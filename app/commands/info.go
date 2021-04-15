@@ -1,29 +1,39 @@
 package commands
 
 import (
+	"github.com/blyndusk/cofy/app/core"
+	"github.com/blyndusk/cofy/app/services"
+
 	"github.com/bwmarrin/discordgo"
 )
 
+type infoCommand struct {
+	base           core.BaseCommand
+	stringResponse string
+}
+
 func info(s *discordgo.Session, m *discordgo.MessageCreate) {
-	infoCmd := Command{
-		"info",
-		[]string{"info", "i"},
-		"Give informatiosn about Cofy bot.",
-		"Hi! I'm Cofy, a Discord bot made with the Golang programming language.\nMy purpose is to help you to gain cOoOOooOoooffEeEEeeEeee...",
+	cmd := infoCommand{
+		base: core.BaseCommand{
+			Name:        "info",
+			Aliases:     []string{"info", "i"},
+			Description: "Give informatiosn about Cofy bot.",
+		},
+		stringResponse: "Hi! I'm Cofy, a Discord bot made with the Golang programming language.\nMy purpose is to help you to gain cOoOOooOoooffEeEEeeEeee...",
 	}
 
-	if matchCommand(false, s, m, infoCmd.aliases) == true {
-		callExecute(infoCmd, s, m)
+	if services.MatchCommand(false, s, m, cmd.base.Aliases) == true {
+		services.CallExecute(cmd, s, m)
 	}
-	if matchCommand(true, s, m, infoCmd.aliases) == true {
-		callHelp(infoCmd, s, m)
+	if services.MatchCommand(true, s, m, cmd.base.Aliases) == true {
+		services.CallHelp(cmd, s, m)
 	}
 }
 
-func (command Command) Execute(s *discordgo.Session, m *discordgo.MessageCreate) {
-	s.ChannelMessageSend(m.ChannelID, command.stringResponse)
+func (cmd infoCommand) Execute(s *discordgo.Session, m *discordgo.MessageCreate) {
+	s.ChannelMessageSend(m.ChannelID, cmd.stringResponse)
 }
 
-func (command Command) Help(s *discordgo.Session, m *discordgo.MessageCreate) {
-	s.ChannelMessageSend(m.ChannelID, command.description)
+func (cmd infoCommand) Help(s *discordgo.Session, m *discordgo.MessageCreate) {
+	s.ChannelMessageSend(m.ChannelID, cmd.base.Description)
 }
