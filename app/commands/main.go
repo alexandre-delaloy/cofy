@@ -6,6 +6,11 @@ import (
 
 var Prefix string = "c!"
 
+type ICommand interface {
+	Execute(s *discordgo.Session, m *discordgo.MessageCreate)
+	Help(s *discordgo.Session, m *discordgo.MessageCreate)
+}
+
 type Command struct {
 	name           string
 	aliases        []string
@@ -16,4 +21,3 @@ type Command struct {
 func SetCommands(s *discordgo.Session, m *discordgo.MessageCreate) {
 	Info(s, m)
 }
-
