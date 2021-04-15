@@ -2,6 +2,7 @@ tmp
 
 app/app
 app/tmp
+app/.env
 
 api/api
 api/tmp
