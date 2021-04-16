@@ -6,6 +6,7 @@ import (
 	"github.com/blyndusk/cofy/app/core"
 	"github.com/blyndusk/cofy/app/services"
 	"github.com/bwmarrin/discordgo"
+	"github.com/sirupsen/logrus"
 	log "github.com/sirupsen/logrus"
 )
 
@@ -25,10 +26,12 @@ func profile(s *discordgo.Session, m *discordgo.MessageCreate) {
 	}
 
 	if services.MatchCommand(false, s, m, cmd.base.Aliases) == true {
-		services.CallExecute(cmd, s, m)
+	logrus.Info("cmd | execute | profile")
+	services.CallExecute(cmd, s, m)
 	}
 	if services.MatchCommand(true, s, m, cmd.base.Aliases) == true {
-		services.CallHelp(cmd, s, m)
+	logrus.Info("cmd | help | profile")
+	services.CallHelp(cmd, s, m)
 	}
 }
 
