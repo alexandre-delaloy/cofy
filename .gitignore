@@ -6,3 +6,4 @@ app/.env
 
 api/api
 api/tmp
+api/.env
