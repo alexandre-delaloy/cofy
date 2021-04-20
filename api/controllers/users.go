@@ -10,9 +10,7 @@ import (
 
 func GetAllUsers(c *gin.Context) {
 	var users []models.User
-
 	middlewares.GetAllUsers(c, &users)
-
 	c.JSON(http.StatusOK, users)
 }
 
@@ -39,4 +37,14 @@ func CreateUser(c *gin.Context) {
 	middlewares.CreateUser(c, &input)
 
 	c.JSON(http.StatusOK, input)
+}
+
+
+func UpdateUser(c *gin.Context) {
+	var user models.User
+	var input models.UserInput
+
+	middlewares.UpdateUser(c, &user, &input)
+
+	c.JSON(http.StatusOK, user)
 }

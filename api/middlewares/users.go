@@ -58,3 +58,20 @@ func DeleteUser(c *gin.Context, user *models.User) {
 		return
 	}
 }
+
+
+
+
+func UpdateUser(c *gin.Context, user *models.User, input *models.UserInput) {
+	GetUserById(c, user)
+
+  if err := c.ShouldBindJSON(&input); err != nil {
+    httpStatus, response := helpers.ErrorToJson(http.StatusBadRequest, err.Error())
+    c.JSON(httpStatus, response)
+    return
+  }
+
+  updatedUser := hydrateUser(input)
+  database.Db.Model(&user).Updates(updatedUser)
+
+}
