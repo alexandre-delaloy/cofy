@@ -14,6 +14,7 @@ func usersRoute(r *gin.Engine) {
 
 	r.GET("/users", controllers.GetAllUsers)
 	r.GET("/users/:id", controllers.GetUserById)
+	r.GET("/users/d/:discord_id", controllers.GetUserByDiscordId)
 
 	r.PUT("/users/:id", controllers.UpdateUser)
 

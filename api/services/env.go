@@ -8,7 +8,7 @@ import (
 	"github.com/joho/godotenv"
 )
 
-func SetupEnv(key string) string {
+func EnvVar(key string) string {
 	if err := godotenv.Load(".env"); err != nil {
 		log.Error("Error loading .env file", err)
 	}
