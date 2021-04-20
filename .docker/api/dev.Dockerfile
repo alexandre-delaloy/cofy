@@ -4,7 +4,7 @@ WORKDIR /go/src/github.com/blyndusk/cofy/api
 
 COPY go.mod .
 
-# COPY api/go.sum .
+COPY go.sum .
 
 RUN go mod download
 

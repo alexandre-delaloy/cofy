@@ -3,6 +3,7 @@ help:
 
 setup-env: ## Copy sample files 
 	cp app/.env.sample app/.env
+	cp api/.env.sample api/.env
 
 start: ## Up the docker-compose without cache or orphans
 	docker-compose up \
