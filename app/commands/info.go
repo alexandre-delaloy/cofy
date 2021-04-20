@@ -3,7 +3,7 @@ package commands
 import (
 	"github.com/blyndusk/cofy/app/core"
 	"github.com/blyndusk/cofy/app/services"
-	"github.com/sirupsen/logrus"
+	log "github.com/sirupsen/logrus"
 
 	"github.com/bwmarrin/discordgo"
 )
@@ -24,12 +24,12 @@ func info(s *discordgo.Session, m *discordgo.MessageCreate) {
 	}
 
 	if services.MatchCommand(false, s, m, cmd.base.Aliases) == true {
-	logrus.Info("cmd | execute | info")
-	services.CallExecute(cmd, s, m)
+		log.Info("cmd | execute | info")
+		services.CallExecute(cmd, s, m)
 	}
 	if services.MatchCommand(true, s, m, cmd.base.Aliases) == true {
-	logrus.Info("cmd | help | info")
-	services.CallHelp(cmd, s, m)
+		log.Info("cmd | help | info")
+		services.CallHelp(cmd, s, m)
 	}
 }
 

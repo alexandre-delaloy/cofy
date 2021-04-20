@@ -16,11 +16,11 @@ var Db *gorm.DB
 
 func Connect() error {
 	dbURL := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s sslmode=disable",
-		services.SetupEnv("DB_HOST"),
-		services.SetupEnv("DB_USER"),
-		services.SetupEnv("DB_PASSWORD"),
-		services.SetupEnv("DB_NAME"),
-		services.SetupEnv("DB_PORT"),
+		services.EnvVar("DB_HOST"),
+		services.EnvVar("DB_USER"),
+		services.EnvVar("DB_PASSWORD"),
+		services.EnvVar("DB_NAME"),
+		services.EnvVar("DB_PORT"),
 	)
 	var tmpDb *gorm.DB
 	var err error

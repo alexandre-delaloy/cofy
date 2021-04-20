@@ -40,6 +40,14 @@ func GetUserById(c *gin.Context, user *models.User) {
 	}
 }
 
+func GetUserByDiscordId(c *gin.Context, user *models.User) {
+	if error := database.Db.First(&user, c.Params.ByName("discord_id")).Error; error != nil {
+		httpStatus, response := helpers.GormErrorResponse(error)
+		c.JSON(httpStatus, response)
+		return
+	}
+}
+
 func UpdateUser(c *gin.Context, user *models.User, input *models.UserInput) {
 	GetUserById(c, user)
 	if err := c.ShouldBindJSON(&input); err != nil {

@@ -27,6 +27,12 @@ func GetUserById(c *gin.Context) {
 	c.JSON(http.StatusOK, user)
 }
 
+func GetUserByDiscordId(c *gin.Context) {
+	var user models.User
+	middlewares.GetUserById(c, &user)
+	c.JSON(http.StatusOK, user)
+}
+
 func UpdateUser(c *gin.Context) {
 	var user models.User
 	var input models.UserInput

@@ -3,26 +3,21 @@ package main
 import (
 	"flag"
 	"fmt"
-	"log"
+	"net/http"
 	"os"
 	"os/signal"
 	"regexp"
 	"syscall"
 
-	"github.com/bwmarrin/discordgo"
-	"github.com/joho/godotenv"
-
 	"github.com/blyndusk/cofy/app/commands"
+	"github.com/blyndusk/cofy/app/services"
+	"github.com/bwmarrin/discordgo"
+	log "github.com/sirupsen/logrus"
 )
 
 func init() {
-	// load environment variables, return error if doesn't exist
-	err := godotenv.Load()
-	if err != nil {
-		log.Fatal("Error loading .env file")
-	}
 	// get Discord token
-	Token := os.Getenv("BOT_TOKEN")
+	Token := services.EnvVar("BOT_TOKEN")
 
 	// create a variable named "t", as the bot token
 	flag.StringVar(&Token, "t", "", "Bot Token")
@@ -30,8 +25,8 @@ func init() {
 }
 
 func main() {
+	pingApi()
 	setupSession()
-
 }
 
 func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
@@ -86,11 +81,19 @@ func setupSession() {
 	}
 
 	// Wait here until CTRL-C or other term signal is received.
-	fmt.Println("Bot is now running.  Press CTRL-C to exit.")
+	log.Info("Bot is now running.  Press CTRL-C to exit.")
 	sc := make(chan os.Signal, 1)
 	signal.Notify(sc, syscall.SIGINT, syscall.SIGTERM, os.Interrupt, os.Kill)
 	<-sc
 
 	// Cleanly close down the Discord session.
 	dg.Close()
+}
+
+func pingApi() {
+	_, err := http.Get(services.EnvVar("API_URL"))
+	if err != nil {
+		log.Fatal(err)
+	}
+	log.Info("API available !")
 }

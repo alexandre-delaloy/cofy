@@ -3,15 +3,15 @@ package services
 import (
 	"os"
 
+	"github.com/blyndusk/cofy/app/helpers"
 	log "github.com/sirupsen/logrus"
 
 	"github.com/joho/godotenv"
 )
 
 func EnvVar(key string) string {
-	if err := godotenv.Load(".env"); err != nil {
-		log.Error("Error loading .env file", err)
-	}
+	err := godotenv.Load(".env")
+	helpers.ExitOnError("Error loading .env file", err)
 
 	envVars, doesExist := os.LookupEnv(key)
 	if !doesExist {
