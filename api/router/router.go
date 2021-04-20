@@ -12,4 +12,6 @@ func Setup(r *gin.Engine) {
 func usersRoute(r *gin.Engine) {
 	r.GET("/users", controllers.GetAllUsers)
 	r.GET("/users/:id", controllers.GetUserById)
+
+	r.POST("/users", controllers.CreateUser)
 }

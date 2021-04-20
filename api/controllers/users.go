@@ -12,9 +12,8 @@ func GetAllUsers(c *gin.Context) {
 	var users []models.User
 
 	middlewares.GetAllUsers(c, &users)
-	c.JSON(http.StatusOK, gin.H{
-		"data": users,
-	})
+
+	c.JSON(http.StatusOK, users)
 }
 
 func GetUserById(c *gin.Context) {
@@ -22,7 +21,14 @@ func GetUserById(c *gin.Context) {
 
 	middlewares.GetUserById(c, &user)
 
-	c.JSON(http.StatusOK, gin.H{
-		"data": user,
-	})
+	c.JSON(http.StatusOK, user)
+}
+
+
+func CreateUser(c *gin.Context) {
+	var input models.UserInput
+
+	middlewares.CreateUser(c, &input)
+
+	c.JSON(http.StatusOK, input)
 }

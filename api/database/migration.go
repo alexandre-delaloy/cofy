@@ -8,7 +8,7 @@ import (
 func Migrate() {
 	_ = Db.AutoMigrate(&models.User{})
 	logrus.Info("Migrations done !")
-	LoadFakeData()
+	// LoadFakeData()
 
 }
 func LoadFakeData() {

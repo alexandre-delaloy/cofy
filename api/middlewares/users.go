@@ -1,6 +1,8 @@
 package middlewares
 
 import (
+	"net/http"
+
 	"github.com/blyndusk/cofy/api/database"
 	"github.com/blyndusk/cofy/api/helpers"
 	"github.com/blyndusk/cofy/api/models"
@@ -21,5 +23,31 @@ func GetUserById(c *gin.Context, user *models.User) {
 		httpStatus, response := helpers.GormErrorResponse(error)
 		c.JSON(httpStatus, response)
 		return
+	}
+}
+
+
+
+func CreateUser(c *gin.Context, input *models.UserInput) {
+  if err := c.ShouldBindJSON(&input); err != nil {
+    httpStatus, response := helpers.ErrorToJson(http.StatusBadRequest, err.Error())
+    c.JSON(httpStatus, response)
+    return
+  }
+
+	user := hydrateUser(input)
+
+  if error := database.Db.Create(&user).Error; error != nil {
+    httpStatus, response := helpers.GormErrorResponse(error)
+    c.JSON(httpStatus, response)
+    return
+  }
+}
+
+func hydrateUser(input *models.UserInput) models.User {
+	return models.User{
+		Name: input.Name,
+		Coins: input.Coins,
+		Xp: input.Xp,
 	}
 }
