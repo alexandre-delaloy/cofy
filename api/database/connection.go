@@ -4,26 +4,17 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/blyndusk/cofy/api/helpers"
 	"github.com/blyndusk/cofy/api/services"
 	log "github.com/sirupsen/logrus"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
 
-// Db is the database object
 var Db *gorm.DB
 
-// Config is the structure used to load db credentials from the environment.
-type Config struct {
-	Name     string `env:"DB_NAME"`
-	User     string `env:"DB_USER"`
-	Password string `env:"DB_PASSWORD"`
-	Host     string `env:"DB_HOST"`
-	Port     int    `env:"DB_PORT" envDefault:"5432"`
-}
 
-// Init Initializes a db connection
-func Init(cfg Config) error {
+func Connect() error {
 
 	dbURL := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s sslmode=disable",
 		services.SetupEnv("DB_HOST"),
@@ -32,25 +23,21 @@ func Init(cfg Config) error {
 		services.SetupEnv("DB_NAME"),
 		services.SetupEnv("DB_PORT"),
 	)
-	log.Info(dbURL)
 	var tmpDb *gorm.DB
 	var err error
 
 	// Try connecting database 5 times
-	for test := 1; test <= 5; test++ {
+	for i := 1; i <= 5; i++ {
 		tmpDb, err = gorm.Open(postgres.Open(dbURL), &gorm.Config{})
-
 		if err != nil {
-			log.Warn("db connection failed. (%s/5)", test)
+			log.Warn(fmt.Sprintf("Failed to connect to database. Retry... (%d/5)", i))
 			time.Sleep(5 * time.Second)
 			continue
 		}
-
 		break
 	}
-	if err != nil {
-		return err
-	}
+	helpers.ExitOnError("Failed to connecto to database", err)
+
 
 	Db = tmpDb
 	log.Info("Connected to database!")

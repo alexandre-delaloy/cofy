@@ -4,9 +4,8 @@ import (
 	"net/http"
 
 	"github.com/blyndusk/cofy/api/database"
-	"github.com/caarlos0/env"
+	"github.com/blyndusk/cofy/api/helpers"
 	"github.com/gin-gonic/gin"
-	log "github.com/sirupsen/logrus"
 )
 
 func main() {
@@ -15,24 +14,16 @@ func main() {
 
 func setupServer() *gin.Engine {
 
-	cfg := database.Config{}
-	log.Info(cfg)
-	if err := env.Parse(&cfg); err != nil {
-		log.Fatal(err)
-	}
+	err := database.Connect()
+	helpers.ExitOnError("Failed to connecto to database", err)
 
-	err := database.Init(cfg)
-
-	if err != nil {
-		log.Fatal("fail to connect db", err)
-	}
 	r := gin.Default()
 
-	r.GET("/ping", func(c *gin.Context) {
+	r.GET("/", func(c *gin.Context) {
 		c.JSON(http.StatusOK, gin.H{
-			"message": "pong",
+			"message": "Hello World !",
 		})
 	})
-	r.Run(":3003") // listen and serve on 0.0.0.0:8080 (for windows "localhost:8080")
+	r.Run(":3003")
 	return r
 }
