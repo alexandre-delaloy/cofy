@@ -12,4 +12,6 @@ RUN go get -u github.com/cosmtrek/air
 
 COPY . .
 
+EXPOSE 3003
+
 ENTRYPOINT [ "/go/bin/air" ]

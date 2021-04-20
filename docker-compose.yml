@@ -8,6 +8,8 @@ services:
       dockerfile: ../.docker/app/dev.Dockerfile
     volumes:
       - ./app:/go/src/github.com/blyndusk/cofy/app
+    networks:
+      - cofy
   api:
     container_name: cofy_api
     build:
@@ -49,4 +51,3 @@ volumes:
 
 networks:
   cofy:
-    driver: bridge
