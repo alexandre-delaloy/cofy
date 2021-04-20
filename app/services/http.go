@@ -5,16 +5,18 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"time"
 
 	log "github.com/sirupsen/logrus"
 )
 
 type User struct {
-	Id        uint   `json:"id"`
-	DiscordId string `json:"discord_id"`
-	Name      string `json:"name"`
-	Coins     int    `json:"coins"`
-	Xp        int    `json:"xp"`
+	Id        uint      `json:"id"`
+	DiscordId string    `json:"discord_id"`
+	Name      string    `json:"name"`
+	Coins     int       `json:"coins"`
+	Xp        int       `json:"xp"`
+	CreatedAt time.Time `json:"created_at"`
 }
 
 func GetUser(discordId string) User {

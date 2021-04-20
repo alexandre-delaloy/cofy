@@ -42,11 +42,11 @@ func (command profileCommand) Execute(s *discordgo.Session, m *discordgo.Message
 		Title:       fmt.Sprintf("%s's Cofy profile", m.Author.Username),
 		Description: "desc desc",
 		Thumbnail:   &discordgo.MessageEmbedThumbnail{URL: m.Author.AvatarURL(""), Width: 10, Height: 10},
-		// Footer:      &discordgo.MessageEmbedFooter{Text: "Source code: https://github.com/blyndusk/cofy"},
 		Fields: []*discordgo.MessageEmbedField{
 			{Name: ":coin: CF:", Value: strconv.Itoa(user.Coins), Inline: true},
 			{Name: ":chart_with_upwards_trend: XP:", Value: strconv.Itoa(user.Xp), Inline: true},
 		},
+		Footer: &discordgo.MessageEmbedFooter{Text: fmt.Sprintf("Member since %s", user.CreatedAt.Format("01-02-2006"))},
 	})
 }
 
