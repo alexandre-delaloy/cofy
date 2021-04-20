@@ -14,7 +14,7 @@ type User struct {
 type Users []User
 
 type UserInput struct {
-	Name      string    `json:"name"`
-	Coins     uint      `json:"coins"`
-	Xp        uint      `json:"xp"`
+	Name  string `json:"name"`
+	Coins uint   `json:"coins"`
+	Xp    uint   `json:"xp"`
 }

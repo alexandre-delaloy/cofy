@@ -24,6 +24,14 @@ func GetUserById(c *gin.Context) {
 	c.JSON(http.StatusOK, user)
 }
 
+func DeleteUser(c *gin.Context) {
+	var user models.User
+
+	middlewares.DeleteUser(c, &user)
+
+	c.JSON(http.StatusOK, gin.H{
+		"message": "User deleted successfully"})
+}
 
 func CreateUser(c *gin.Context) {
 	var input models.UserInput
