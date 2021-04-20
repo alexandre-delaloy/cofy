@@ -2,11 +2,11 @@ package commands
 
 import (
 	"fmt"
+	"strconv"
 
 	"github.com/blyndusk/cofy/app/core"
 	"github.com/blyndusk/cofy/app/services"
 	"github.com/bwmarrin/discordgo"
-	"github.com/sirupsen/logrus"
 	log "github.com/sirupsen/logrus"
 )
 
@@ -26,30 +26,28 @@ func profile(s *discordgo.Session, m *discordgo.MessageCreate) {
 	}
 
 	if services.MatchCommand(false, s, m, cmd.base.Aliases) == true {
-	logrus.Info("cmd | execute | profile")
-	services.CallExecute(cmd, s, m)
+		log.Info("cmd | execute | profile")
+		services.CallExecute(cmd, s, m)
 	}
 	if services.MatchCommand(true, s, m, cmd.base.Aliases) == true {
-	logrus.Info("cmd | help | profile")
-	services.CallHelp(cmd, s, m)
+		log.Info("cmd | help | profile")
+		services.CallHelp(cmd, s, m)
 	}
 }
 
 func (command profileCommand) Execute(s *discordgo.Session, m *discordgo.MessageCreate) {
-	_, err := s.ChannelMessageSendEmbed(m.ChannelID, &discordgo.MessageEmbed{
+	user := services.GetUser(m.Author.ID)
+
+	s.ChannelMessageSendEmbed(m.ChannelID, &discordgo.MessageEmbed{
 		Title:       fmt.Sprintf("%s's Cofy profile", m.Author.Username),
 		Description: "desc desc",
 		Thumbnail:   &discordgo.MessageEmbedThumbnail{URL: m.Author.AvatarURL(""), Width: 10, Height: 10},
-		Footer:      &discordgo.MessageEmbedFooter{Text: "Source code: https://github.com/blyndusk/cofy"},
+		// Footer:      &discordgo.MessageEmbedFooter{Text: "Source code: https://github.com/blyndusk/cofy"},
 		Fields: []*discordgo.MessageEmbedField{
-			{Name: ":coin: CF:", Value: "0", Inline: true},
-			{Name: ":chart_with_upwards_trend: XP:", Value: "0", Inline: true},
-			// {Name: "bar2", Value: "foo2", Inline: true},
+			{Name: ":coin: CF:", Value: strconv.Itoa(user.Coins), Inline: true},
+			{Name: ":chart_with_upwards_trend: XP:", Value: strconv.Itoa(user.Xp), Inline: true},
 		},
 	})
-	if err != nil {
-		log.Error(err)
-	}
 }
 
 func (cmd profileCommand) Help(s *discordgo.Session, m *discordgo.MessageCreate) {
