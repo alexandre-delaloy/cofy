@@ -13,7 +13,6 @@ import (
 
 var Db *gorm.DB
 
-
 func Connect() error {
 
 	dbURL := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s sslmode=disable",
@@ -38,9 +37,8 @@ func Connect() error {
 	}
 	helpers.ExitOnError("Failed to connecto to database", err)
 
-
 	Db = tmpDb
-	log.Info("Connected to database!")
+	log.Info("Connected to database !")
 
 	return nil
 }
