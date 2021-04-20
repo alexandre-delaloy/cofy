@@ -9,12 +9,6 @@ import (
 	"gorm.io/gorm"
 )
 
-func Error(msg string, err error) {
-	if err != nil {
-		log.Error(msg, err)
-	}
-}
-
 func ExitOnError(msg string, err error) {
 	if err != nil {
 		log.Fatal(msg, err)
@@ -57,7 +51,6 @@ func GormErrorResponse(error error) (int, gin.H) {
 	}
 }
 
-// ErrorToJSON: Return a HTTP status code and a JSON response based on parameters
 func ErrorToJson(httpStatus int, errorMessage string) (int, gin.H) {
 	return httpStatus, gin.H{
 		"status": httpStatus,

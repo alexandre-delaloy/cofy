@@ -4,17 +4,17 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/blyndusk/cofy/api/helpers"
-	"github.com/blyndusk/cofy/api/services"
 	log "github.com/sirupsen/logrus"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
+
+	"github.com/blyndusk/cofy/api/helpers"
+	"github.com/blyndusk/cofy/api/services"
 )
 
 var Db *gorm.DB
 
 func Connect() error {
-
 	dbURL := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s sslmode=disable",
 		services.SetupEnv("DB_HOST"),
 		services.SetupEnv("DB_USER"),
@@ -25,7 +25,6 @@ func Connect() error {
 	var tmpDb *gorm.DB
 	var err error
 
-	// Try connecting database 5 times
 	for i := 1; i <= 5; i++ {
 		tmpDb, err = gorm.Open(postgres.Open(dbURL), &gorm.Config{})
 		if err != nil {
@@ -39,6 +38,5 @@ func Connect() error {
 
 	Db = tmpDb
 	log.Info("Connected to database !")
-
 	return nil
 }

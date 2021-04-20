@@ -17,8 +17,43 @@ func CreateUser(c *gin.Context, input *models.UserInput) {
 	}
 
 	user := hydrateUser(input)
-
 	if error := database.Db.Create(&user).Error; error != nil {
+		httpStatus, response := helpers.GormErrorResponse(error)
+		c.JSON(httpStatus, response)
+		return
+	}
+}
+
+func GetAllUsers(c *gin.Context, users *models.Users) {
+	if error := database.Db.Find(&users).Error; error != nil {
+		httpStatus, response := helpers.GormErrorResponse(error)
+		c.JSON(httpStatus, response)
+		return
+	}
+}
+
+func GetUserById(c *gin.Context, user *models.User) {
+	if error := database.Db.First(&user, c.Params.ByName("id")).Error; error != nil {
+		httpStatus, response := helpers.GormErrorResponse(error)
+		c.JSON(httpStatus, response)
+		return
+	}
+}
+
+func UpdateUser(c *gin.Context, user *models.User, input *models.UserInput) {
+	GetUserById(c, user)
+	if err := c.ShouldBindJSON(&input); err != nil {
+		httpStatus, response := helpers.ErrorToJson(http.StatusBadRequest, err.Error())
+		c.JSON(httpStatus, response)
+		return
+	}
+
+	updatedUser := hydrateUser(input)
+	database.Db.Model(&user).Updates(updatedUser)
+}
+
+func DeleteUser(c *gin.Context, user *models.User) {
+	if error := database.Db.First(&user, c.Params.ByName("id")).Delete(&user).Error; error != nil {
 		httpStatus, response := helpers.GormErrorResponse(error)
 		c.JSON(httpStatus, response)
 		return
@@ -31,47 +66,4 @@ func hydrateUser(input *models.UserInput) models.User {
 		Coins: input.Coins,
 		Xp:    input.Xp,
 	}
-}
-
-func GetAllUsers(c *gin.Context, users *[]models.User) {
-	if error := database.Db.Find(&users).Error; error != nil {
-		httpStatus, response := helpers.GormErrorResponse(error)
-		c.JSON(httpStatus, response)
-		return
-	}
-}
-
-func GetUserById(c *gin.Context, user *models.User) {
-
-	if error := database.Db.First(&user, c.Params.ByName("id")).Error; error != nil {
-		httpStatus, response := helpers.GormErrorResponse(error)
-		c.JSON(httpStatus, response)
-		return
-	}
-}
-
-func DeleteUser(c *gin.Context, user *models.User) {
-
-	if error := database.Db.First(&user, c.Params.ByName("id")).Delete(&user).Error; error != nil {
-		httpStatus, response := helpers.GormErrorResponse(error)
-		c.JSON(httpStatus, response)
-		return
-	}
-}
-
-
-
-
-func UpdateUser(c *gin.Context, user *models.User, input *models.UserInput) {
-	GetUserById(c, user)
-
-  if err := c.ShouldBindJSON(&input); err != nil {
-    httpStatus, response := helpers.ErrorToJson(http.StatusBadRequest, err.Error())
-    c.JSON(httpStatus, response)
-    return
-  }
-
-  updatedUser := hydrateUser(input)
-  database.Db.Model(&user).Updates(updatedUser)
-
 }
