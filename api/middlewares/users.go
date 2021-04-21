@@ -7,6 +7,7 @@ import (
 	"github.com/blyndusk/cofy/api/helpers"
 	"github.com/blyndusk/cofy/api/models"
 	"github.com/gin-gonic/gin"
+	"github.com/sirupsen/logrus"
 )
 
 func CreateUser(c *gin.Context, input *models.UserInput) {
@@ -33,7 +34,7 @@ func GetAllUsers(c *gin.Context, users *models.Users) {
 }
 
 func GetUserById(c *gin.Context, user *models.User) {
-	if error := database.Db.First(&user, c.Params.ByName("id")).Error; error != nil {
+	if error := database.Db.Where(&user, c.Params.ByName("id")).Error; error != nil {
 		httpStatus, response := helpers.GormErrorResponse(error)
 		c.JSON(httpStatus, response)
 		return
@@ -41,7 +42,7 @@ func GetUserById(c *gin.Context, user *models.User) {
 }
 
 func GetUserByDiscordId(c *gin.Context, user *models.User) {
-	if error := database.Db.First(&user, c.Params.ByName("discord_id")).Error; error != nil {
+	if error := database.Db.Where(&user, c.Params.ByName("discord_id")).Error; error != nil {
 		httpStatus, response := helpers.GormErrorResponse(error)
 		c.JSON(httpStatus, response)
 		return
@@ -61,7 +62,7 @@ func UpdateUser(c *gin.Context, user *models.User, input *models.UserInput) {
 }
 
 func DeleteUser(c *gin.Context, user *models.User) {
-	if error := database.Db.First(&user, c.Params.ByName("id")).Delete(&user).Error; error != nil {
+	if error := database.Db.Where(&user, c.Params.ByName("id")).Delete(&user).Error; error != nil {
 		httpStatus, response := helpers.GormErrorResponse(error)
 		c.JSON(httpStatus, response)
 		return
@@ -70,8 +71,9 @@ func DeleteUser(c *gin.Context, user *models.User) {
 
 func hydrateUser(input *models.UserInput) models.User {
 	return models.User{
-		Name:  input.Name,
-		Coins: input.Coins,
-		Xp:    input.Xp,
+		DiscordId: input.DiscordId,
+		Name:      input.Name,
+		Coins:     input.Coins,
+		Xp:        input.Xp,
 	}
 }
