@@ -13,7 +13,7 @@ type infoCommand struct {
 	stringResponse string
 }
 
-func info(s *discordgo.Session, m *discordgo.MessageCreate) {
+func Info(s *discordgo.Session, m *discordgo.MessageCreate) {
 	cmd := infoCommand{
 		base: core.BaseCommand{
 			Name:        "info",

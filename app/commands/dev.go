@@ -13,7 +13,7 @@ type devCommand struct {
 	stringResponse string
 }
 
-func dev(s *discordgo.Session, m *discordgo.MessageCreate) {
+func Dev(s *discordgo.Session, m *discordgo.MessageCreate) {
 	cmd := devCommand{
 		base: core.BaseCommand{
 			Name:        "dev",

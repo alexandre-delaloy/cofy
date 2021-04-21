@@ -4,25 +4,22 @@ import (
 	"strconv"
 
 	"github.com/blyndusk/cofy/app/core"
-	"github.com/blyndusk/cofy/app/embeds"
 	"github.com/blyndusk/cofy/app/services"
 	"github.com/bwmarrin/discordgo"
 	log "github.com/sirupsen/logrus"
 )
 
 type profileCommand struct {
-	base           core.BaseCommand
-	stringResponse string
+	base core.BaseCommand
 }
 
-func profile(s *discordgo.Session, m *discordgo.MessageCreate) {
+func Profile(s *discordgo.Session, m *discordgo.MessageCreate) {
 	cmd := profileCommand{
 		base: core.BaseCommand{
 			Name:        "profile",
 			Aliases:     []string{"profile", "pf"},
-			Description: "Give informatiosn about you.",
+			Description: "Give informations about you.",
 		},
-		stringResponse: "coffee",
 	}
 
 	if services.MatchCommand(false, s, m, cmd.base.Aliases) == true {
@@ -37,12 +34,10 @@ func profile(s *discordgo.Session, m *discordgo.MessageCreate) {
 
 func (command profileCommand) Execute(s *discordgo.Session, m *discordgo.MessageCreate) {
 	user := services.GetUser(m.Author.ID)
-	
-	if strconv.Itoa(int(user.DiscordId)) != m.Author.ID {
-		embeds.ProfileNotFound(s, m)
-		services.PostUser(s, m)
-	} else {
-		embeds.Profile(s, m, user)
+
+	services.CreateUserIfDoesntExist(user, s, m)
+	if strconv.Itoa(int(user.DiscordId)) == m.Author.ID {
+		services.EmbedViewProfile(s, m, user)
 	}
 }
 
