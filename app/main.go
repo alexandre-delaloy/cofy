@@ -3,13 +3,16 @@ package main
 import (
 	"flag"
 	"fmt"
+	"math"
 	"net/http"
 	"os"
 	"os/signal"
 	"regexp"
+	"strings"
 	"syscall"
 
 	"github.com/blyndusk/cofy/app/commands"
+	"github.com/blyndusk/cofy/app/core"
 	"github.com/blyndusk/cofy/app/services"
 	"github.com/bwmarrin/discordgo"
 	log "github.com/sirupsen/logrus"
@@ -30,14 +33,29 @@ func main() {
 }
 
 func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
-
-	// Ignore all messages created by the bot itself
-	// This isn't required in this specific example but it's a good practice.
 	if m.Author.ID == s.State.User.ID {
 		return
 	}
-	commands.SetCommands(s, m)
-	// commands.Profile(s, m, prefix)
+
+	commands.Info(s, m)
+	commands.Profile(s, m)
+	commands.Dev(s, m)
+
+	if !strings.HasPrefix(m.Content, core.Prefix) {
+		gainedCoins := int(math.Round(float64(len(m.Content)) / 10))
+		gainedXp := int(math.Round(float64(len(m.Content)) / 5))
+		services.UpdateGains(s, m, gainedCoins, gainedXp)
+		services.EmbedViewGainss(s, m, gainedCoins, gainedXp)
+
+	}
+
+}
+
+func messageRead(s *discordgo.Session, m *discordgo.MessageCreate) {
+	if m.Author.ID == s.State.User.ID {
+		return
+	}
+
 }
 
 func reactToCoffee(s *discordgo.Session, m *discordgo.MessageCreate) {
@@ -49,7 +67,6 @@ func reactToCoffee(s *discordgo.Session, m *discordgo.MessageCreate) {
 		if m.Author.ID == s.State.User.ID {
 			return
 		}
-		s.ChannelMessageSend(m.ChannelID, "...mMmMMmmMmmmHhHHhhHhhh... ...cOoOOooOoooffEeEEeeEeee...")
 		s.MessageReactionAdd(m.ChannelID, m.ID, "☕")
 
 	}
@@ -68,6 +85,7 @@ func setupSession() {
 
 	// Register the messageCreate func as a callback for MessageCreate events.
 	dg.AddHandler(messageCreate)
+	dg.AddHandler(messageRead)
 	dg.AddHandler(reactToCoffee)
 
 	// In this example, we only care about receiving message events.
