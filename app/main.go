@@ -51,12 +51,6 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 
 }
 
-func messageRead(s *discordgo.Session, m *discordgo.MessageCreate) {
-	if m.Author.ID == s.State.User.ID {
-		return
-	}
-
-}
 
 func reactToCoffee(s *discordgo.Session, m *discordgo.MessageCreate) {
 
@@ -85,7 +79,6 @@ func setupSession() {
 
 	// Register the messageCreate func as a callback for MessageCreate events.
 	dg.AddHandler(messageCreate)
-	dg.AddHandler(messageRead)
 	dg.AddHandler(reactToCoffee)
 
 	// In this example, we only care about receiving message events.
