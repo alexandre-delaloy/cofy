@@ -7,42 +7,48 @@ import (
 	"github.com/blyndusk/cofy/api/helpers"
 	"github.com/blyndusk/cofy/api/models"
 	"github.com/gin-gonic/gin"
+	log "github.com/sirupsen/logrus"
 )
 
 func CreateUser(c *gin.Context, input *models.UserInput) {
 	if err := c.ShouldBindJSON(&input); err != nil {
+		log.Error(err)
 		httpStatus, response := helpers.ErrorToJson(http.StatusBadRequest, err.Error())
 		c.JSON(httpStatus, response)
 		return
 	}
 
 	user := hydrateUser(input)
-	if error := database.Db.Create(&user).Error; error != nil {
-		httpStatus, response := helpers.GormErrorResponse(error)
+	if err := database.Db.Create(&user).Error; err != nil {
+		log.Error(err)
+		httpStatus, response := helpers.GormErrorResponse(err)
 		c.JSON(httpStatus, response)
 		return
 	}
 }
 
 func GetAllUsers(c *gin.Context, users *models.Users) {
-	if error := database.Db.Find(&users).Error; error != nil {
-		httpStatus, response := helpers.GormErrorResponse(error)
+	if err := database.Db.Find(&users).Error; err != nil {
+		log.Error(err)
+		httpStatus, response := helpers.GormErrorResponse(err)
 		c.JSON(httpStatus, response)
 		return
 	}
 }
 
 func GetUserById(c *gin.Context, user *models.User) {
-	if error := database.Db.First(&user, c.Params.ByName("id")).Error; error != nil {
-		httpStatus, response := helpers.GormErrorResponse(error)
+	if err := database.Db.First(&user, c.Params.ByName("id")).Error; err != nil {
+		log.Error(err)
+		httpStatus, response := helpers.GormErrorResponse(err)
 		c.JSON(httpStatus, response)
 		return
 	}
 }
 
 func GetUserByDiscordId(c *gin.Context, user *models.User) {
-	if error := database.Db.First(&user, c.Params.ByName("discord_id")).Error; error != nil {
-		httpStatus, response := helpers.GormErrorResponse(error)
+	if err := database.Db.Where("discord_id = ?", c.Params.ByName("discord_id")).First(&user).Error; err != nil {
+		log.Error(err)
+		httpStatus, response := helpers.GormErrorResponse(err)
 		c.JSON(httpStatus, response)
 		return
 	}
@@ -51,6 +57,7 @@ func GetUserByDiscordId(c *gin.Context, user *models.User) {
 func UpdateUser(c *gin.Context, user *models.User, input *models.UserInput) {
 	GetUserById(c, user)
 	if err := c.ShouldBindJSON(&input); err != nil {
+		log.Error(err)
 		httpStatus, response := helpers.ErrorToJson(http.StatusBadRequest, err.Error())
 		c.JSON(httpStatus, response)
 		return
@@ -61,8 +68,9 @@ func UpdateUser(c *gin.Context, user *models.User, input *models.UserInput) {
 }
 
 func DeleteUser(c *gin.Context, user *models.User) {
-	if error := database.Db.First(&user, c.Params.ByName("id")).Delete(&user).Error; error != nil {
-		httpStatus, response := helpers.GormErrorResponse(error)
+	if err := database.Db.First(&user, c.Params.ByName("id")).Delete(&user).Error; err != nil {
+		log.Error(err)
+		httpStatus, response := helpers.GormErrorResponse(err)
 		c.JSON(httpStatus, response)
 		return
 	}
@@ -70,8 +78,9 @@ func DeleteUser(c *gin.Context, user *models.User) {
 
 func hydrateUser(input *models.UserInput) models.User {
 	return models.User{
-		Name:  input.Name,
-		Coins: input.Coins,
-		Xp:    input.Xp,
+		DiscordId: input.DiscordId,
+		Name:      input.Name,
+		Coins:     input.Coins,
+		Xp:        input.Xp,
 	}
 }
