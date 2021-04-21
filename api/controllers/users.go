@@ -29,7 +29,7 @@ func GetUserById(c *gin.Context) {
 
 func GetUserByDiscordId(c *gin.Context) {
 	var user models.User
-	middlewares.GetUserById(c, &user)
+	middlewares.GetUserByDiscordId(c, &user)
 	c.JSON(http.StatusOK, user)
 }
 
