@@ -13,10 +13,9 @@ func usersRoute(r *gin.Engine) {
 	r.POST("/users", controllers.CreateUser)
 
 	r.GET("/users", controllers.GetAllUsers)
-	r.GET("/users/:id", controllers.GetUserById)
-	r.GET("/users/d/:discord_id", controllers.GetUserByDiscordId)
+	r.GET("/users/:discord_id", controllers.GetUserById)
 
-	r.PUT("/users/:id", controllers.UpdateUser)
+	r.PUT("/users/:discord_id", controllers.UpdateUser)
 
-	r.DELETE("/users/:id", controllers.DeleteUser)
+	r.DELETE("/users/:discord_id", controllers.DeleteUser)
 }

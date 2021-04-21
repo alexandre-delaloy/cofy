@@ -37,15 +37,6 @@ func GetAllUsers(c *gin.Context, users *models.Users) {
 }
 
 func GetUserById(c *gin.Context, user *models.User) {
-	if err := database.Db.First(&user, c.Params.ByName("id")).Error; err != nil {
-		log.Error(err)
-		httpStatus, response := helpers.GormErrorResponse(err)
-		c.JSON(httpStatus, response)
-		return
-	}
-}
-
-func GetUserByDiscordId(c *gin.Context, user *models.User) {
 	if err := database.Db.Where("discord_id = ?", c.Params.ByName("discord_id")).First(&user).Error; err != nil {
 		log.Error(err)
 		httpStatus, response := helpers.GormErrorResponse(err)
