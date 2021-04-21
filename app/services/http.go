@@ -6,62 +6,45 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
-	"time"
+	"strconv"
 
+	"github.com/blyndusk/cofy/app/core"
+	"github.com/blyndusk/cofy/app/embeds"
+	"github.com/blyndusk/cofy/app/helpers"
 	"github.com/bwmarrin/discordgo"
-	log "github.com/sirupsen/logrus"
 )
 
-type User struct {
-	Id        uint      `json:"id"`
-	DiscordId string    `json:"discord_id"`
-	Name      string    `json:"name"`
-	Coins     int       `json:"coins"`
-	Xp        int       `json:"xp"`
-	CreatedAt time.Time `json:"created_at"`
-}
-
-func GetUser(discordId string) User {
-	var user User
+func GetUser(discordId string) core.User {
+	var user core.User
 
 	resp, err := http.Get(fmt.Sprintf("%s/users/d/%s", EnvVar("API_URL"), discordId))
-	if err != nil {
-		log.Fatal(err)
-	}
+	helpers.ExitOnError("Error while getting user", err)
 	defer resp.Body.Close()
+
 	body, err := ioutil.ReadAll(resp.Body)
+	helpers.ExitOnError("Error while reading request body", err)
 
 	json.Unmarshal(body, &user)
-	log.Info(user)
-	if err != nil {
-		log.Fatal(err)
-	}
 	return user
 }
 
-func PostUser(discordUser *discordgo.User) {
-	type PostUser struct {
-		DiscordId string `json:"discord_id"`
-		Name      string `json:"name"`
-		Coins     int    `json:"coins"`
-		Xp        int    `json:"xp"`
-	}    
+func PostUser(s *discordgo.Session, m *discordgo.MessageCreate) {
+	embeds.ProfileCreating(s, m)
+	userId, err := strconv.Atoi(m.Author.ID)
 	values := map[string]interface{}{
-		"discord_id": discordUser.ID,
-		"name":       discordUser.Username,
+		"discord_id": userId,
+		"name":       m.Author.Username,
 		"coins":      0,
 		"xp":         0,
 	}
 	json_data, err := json.Marshal(values)
-	resp, err := http.Post(fmt.Sprintf("%s/users", EnvVar("API_URL")),  "application/json",
-	bytes.NewBuffer(json_data))
-	if err != nil {
-		log.Fatal(err)
-	}
+	helpers.ExitOnError("Error while parsing json", err)
+
+	resp, err := http.Post(fmt.Sprintf("%s/users", EnvVar("API_URL")), "application/json",
+		bytes.NewBuffer(json_data))
+	helpers.ExitOnError("Error while posting user", err)
 
 	var res map[string]interface{}
-
 	json.NewDecoder(resp.Body).Decode(&res)
-
-	fmt.Println(res["json"])
+	embeds.ProfileCreated(s, m)
 }
