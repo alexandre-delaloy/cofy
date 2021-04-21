@@ -9,7 +9,6 @@ import (
 	"strconv"
 
 	"github.com/blyndusk/cofy/app/core"
-	"github.com/blyndusk/cofy/app/embeds"
 	"github.com/blyndusk/cofy/app/helpers"
 	"github.com/bwmarrin/discordgo"
 )
@@ -17,7 +16,7 @@ import (
 func GetUser(discordId string) core.User {
 	var user core.User
 
-	resp, err := http.Get(fmt.Sprintf("%s/users/d/%s", EnvVar("API_URL"), discordId))
+	resp, err := http.Get(fmt.Sprintf("%s/users/%s", EnvVar("API_URL"), discordId))
 	helpers.ExitOnError("Error while getting user", err)
 	defer resp.Body.Close()
 
@@ -28,8 +27,7 @@ func GetUser(discordId string) core.User {
 	return user
 }
 
-func PostUser(s *discordgo.Session, m *discordgo.MessageCreate) {
-	embeds.ProfileCreating(s, m)
+func CreateUser(m *discordgo.MessageCreate) {
 	userId, err := strconv.Atoi(m.Author.ID)
 	values := map[string]interface{}{
 		"discord_id": userId,
@@ -46,5 +44,25 @@ func PostUser(s *discordgo.Session, m *discordgo.MessageCreate) {
 
 	var res map[string]interface{}
 	json.NewDecoder(resp.Body).Decode(&res)
-	embeds.ProfileCreated(s, m)
+}
+
+func UpdateGains(s *discordgo.Session, m *discordgo.MessageCreate, gainedCoins int, gainedXp int) {
+	user := GetUser(m.Author.ID)
+	CreateUserIfDoesntExist(user, s, m)
+
+	payload, err := json.Marshal(map[string]interface{}{
+		"coins": user.Coins + gainedCoins,
+		"xp":    user.Xp + gainedXp,
+	})
+	helpers.ExitOnError("Error while parsing json", err)
+
+	client := &http.Client{}
+	req, err := http.NewRequest(http.MethodPut, fmt.Sprintf("%s/users/%s", EnvVar("API_URL"), m.Author.ID), bytes.NewBuffer(payload))
+	helpers.ExitOnError("Error while putting user", err)
+
+	req.Header.Set("Content-Type", "application/json")
+	resp, err := client.Do(req)
+	helpers.ExitOnError("Error while doing request", err)
+
+	defer resp.Body.Close()
 }
