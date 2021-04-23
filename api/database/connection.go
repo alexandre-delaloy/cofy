@@ -9,18 +9,17 @@ import (
 	"gorm.io/gorm"
 
 	"github.com/blyndusk/cofy/api/helpers"
-	"github.com/blyndusk/cofy/api/services"
 )
 
 var Db *gorm.DB
 
 func Connect() error {
 	dbURL := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s sslmode=disable",
-		services.EnvVar("DB_HOST"),
-		services.EnvVar("DB_USER"),
-		services.EnvVar("DB_PASSWORD"),
-		services.EnvVar("DB_NAME"),
-		services.EnvVar("DB_PORT"),
+		helpers.EnvVar("DB_HOST"),
+		helpers.EnvVar("DB_USER"),
+		helpers.EnvVar("DB_PASSWORD"),
+		helpers.EnvVar("DB_NAME"),
+		helpers.EnvVar("DB_PORT"),
 	)
 	var tmpDb *gorm.DB
 	var err error
