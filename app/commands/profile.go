@@ -1,8 +1,6 @@
 package commands
 
 import (
-	"strconv"
-
 	"github.com/blyndusk/cofy/app/core"
 	"github.com/blyndusk/cofy/app/services"
 	"github.com/bwmarrin/discordgo"
@@ -25,20 +23,24 @@ func Profile(s *discordgo.Session, m *discordgo.MessageCreate) {
 	if services.MatchCommand(false, s, m, cmd.base.Aliases) == true {
 		log.Info("cmd | execute | profile")
 		services.CallExecute(cmd, s, m)
+
 	}
 	if services.MatchCommand(true, s, m, cmd.base.Aliases) == true {
 		log.Info("cmd | help | profile")
 		services.CallHelp(cmd, s, m)
 	}
+	services.SeeOtheruserProfile(s, m, cmd.base.Aliases)
 }
 
 func (command profileCommand) Execute(s *discordgo.Session, m *discordgo.MessageCreate) {
-	user := services.GetUser(m.Author.ID)
+	user := services.GetUser(s, m.Author.ID)
 
 	services.CreateUserIfDoesntExist(user, s, m)
-	if strconv.Itoa(int(user.DiscordId)) == m.Author.ID {
-		services.EmbedViewProfile(s, m, user)
+	if user.DiscordId == m.Author.ID {
+		discordUser, _ := s.User(user.DiscordId)
+		services.EmbedViewProfile(s, m, user, discordUser)
 	}
+
 }
 
 func (cmd profileCommand) Help(s *discordgo.Session, m *discordgo.MessageCreate) {

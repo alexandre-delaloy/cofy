@@ -6,6 +6,7 @@ import (
 
 	"github.com/blyndusk/cofy/app/core"
 	"github.com/bwmarrin/discordgo"
+	"github.com/sirupsen/logrus"
 )
 
 func EmbedProfileNotFound(s *discordgo.Session, m *discordgo.MessageCreate) {
@@ -29,13 +30,14 @@ func EmbedProfileCreated(s *discordgo.Session, m *discordgo.MessageCreate) {
 	})
 }
 
-func EmbedViewProfile(s *discordgo.Session, m *discordgo.MessageCreate, user core.User) {
-
+func EmbedViewProfile(s *discordgo.Session, m *discordgo.MessageCreate, user core.User, discordUser *discordgo.User,) {
+	logrus.Info("discord - user")
+	logrus.Info(discordUser)
 	s.ChannelMessageSendEmbed(m.ChannelID, &discordgo.MessageEmbed{
 		Color:       1752220,
-		Title:       fmt.Sprintf("%s's Cofy profile", m.Author.Username),
-		Description: fmt.Sprintf("ID: %s", m.Author.ID),
-		Thumbnail:   &discordgo.MessageEmbedThumbnail{URL: m.Author.AvatarURL(""), Width: 10, Height: 10},
+		Title:       fmt.Sprintf("%s's Cofy profile", discordUser.Username),
+		Description: fmt.Sprintf("ID: %s", discordUser.ID),
+		Thumbnail:   &discordgo.MessageEmbedThumbnail{URL: discordUser.AvatarURL(""), Width: 10, Height: 10},
 		Fields: []*discordgo.MessageEmbedField{
 			{Name: ":coin: CF:", Value: strconv.Itoa(user.Coins), Inline: true},
 			{Name: ":chart_with_upwards_trend: XP:", Value: strconv.Itoa(user.Xp), Inline: true},
