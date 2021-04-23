@@ -34,7 +34,7 @@ func Dev(s *discordgo.Session, m *discordgo.MessageCreate) {
 }
 
 func (cmd devCommand) Execute(s *discordgo.Session, m *discordgo.MessageCreate) {
-	user := services.GetUser(m.Author.ID)
+	user := services.GetUser(s, m.Author.ID)
 	// t1, _:= time.Parse(
 	// 	time.RFC3339,
 	// 	user.CreatedAt)
