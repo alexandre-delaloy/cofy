@@ -11,12 +11,14 @@ import (
 	"github.com/blyndusk/cofy/app/core"
 	"github.com/blyndusk/cofy/app/helpers"
 	"github.com/bwmarrin/discordgo"
+	"github.com/sirupsen/logrus"
 )
 
-func GetUser(discordId string) core.User {
+func GetUser(s *discordgo.Session, discordId string) core.User {
 	var user core.User
-
-	resp, err := http.Get(fmt.Sprintf("%s/users/%s", EnvVar("API_URL"), discordId))
+	logrus.Info("user ne")
+	logrus.Info(user)
+	resp, err := http.Get(fmt.Sprintf("%s/users/%s", helpers.EnvVar("API_URL"), discordId))
 	helpers.ExitOnError("Error while getting user", err)
 	defer resp.Body.Close()
 
@@ -24,6 +26,7 @@ func GetUser(discordId string) core.User {
 	helpers.ExitOnError("Error while reading request body", err)
 
 	json.Unmarshal(body, &user)
+	logrus.Info(user)
 	return user
 }
 
@@ -38,7 +41,7 @@ func CreateUser(m *discordgo.MessageCreate) {
 	json_data, err := json.Marshal(values)
 	helpers.ExitOnError("Error while parsing json", err)
 
-	resp, err := http.Post(fmt.Sprintf("%s/users", EnvVar("API_URL")), "application/json",
+	resp, err := http.Post(fmt.Sprintf("%s/users", helpers.EnvVar("API_URL")), "application/json",
 		bytes.NewBuffer(json_data))
 	helpers.ExitOnError("Error while posting user", err)
 
@@ -47,7 +50,7 @@ func CreateUser(m *discordgo.MessageCreate) {
 }
 
 func UpdateGains(s *discordgo.Session, m *discordgo.MessageCreate, gainedCoins int, gainedXp int) {
-	user := GetUser(m.Author.ID)
+	user := GetUser(s, m.Author.ID)
 	CreateUserIfDoesntExist(user, s, m)
 
 	payload, err := json.Marshal(map[string]interface{}{
@@ -57,7 +60,7 @@ func UpdateGains(s *discordgo.Session, m *discordgo.MessageCreate, gainedCoins i
 	helpers.ExitOnError("Error while parsing json", err)
 
 	client := &http.Client{}
-	req, err := http.NewRequest(http.MethodPut, fmt.Sprintf("%s/users/%s", EnvVar("API_URL"), m.Author.ID), bytes.NewBuffer(payload))
+	req, err := http.NewRequest(http.MethodPut, fmt.Sprintf("%s/users/%s", helpers.EnvVar("API_URL"), m.Author.ID), bytes.NewBuffer(payload))
 	helpers.ExitOnError("Error while putting user", err)
 
 	req.Header.Set("Content-Type", "application/json")
