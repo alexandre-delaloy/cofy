@@ -1,4 +1,4 @@
-package services
+package helpers
 
 import (
 	"fmt"
@@ -6,12 +6,9 @@ import (
 
 	"github.com/blyndusk/cofy/app/core"
 	"github.com/bwmarrin/discordgo"
-	"github.com/sirupsen/logrus"
 )
 
 func EmbedViewProfile(s *discordgo.Session, m *discordgo.MessageCreate, user core.User, discordUser *discordgo.User) {
-	logrus.Info("discord - user")
-	logrus.Info(discordUser)
 	s.ChannelMessageSendEmbed(m.ChannelID, &discordgo.MessageEmbed{
 		Color:       1752220,
 		Title:       fmt.Sprintf("%s's Cofy profile", discordUser.Username),
@@ -28,8 +25,8 @@ func EmbedViewProfile(s *discordgo.Session, m *discordgo.MessageCreate, user cor
 
 func EmbedCreatingProfile(s *discordgo.Session, m *discordgo.MessageCreate) {
 	s.ChannelMessageSendEmbed(m.ChannelID, &discordgo.MessageEmbed{
-		Color:       3447003,
-		Title:       "Creating profile...",
+		Color: 3447003,
+		Title: "Creating profile...",
 	})
 
 }
@@ -38,6 +35,16 @@ func EmbedViewGains(s *discordgo.Session, m *discordgo.MessageCreate, gainedCoin
 
 	s.ChannelMessageSendEmbed(m.ChannelID, &discordgo.MessageEmbed{
 		Color: 1146986,
-		Title: fmt.Sprintf(":coin: CF: +%d / :chart_with_upwards_trend: +%d", gainedCoins, gainedXp),
+		Title: fmt.Sprintf("[DEBUG] :coin: CF: +%d / :chart_with_upwards_trend: +%d", gainedCoins, gainedXp),
+	})
+}
+
+func EmbedProfileNotFound(s *discordgo.Session, m *discordgo.MessageCreate, user core.User, discordUser *discordgo.User) {
+	s.ChannelMessageSendEmbed(m.ChannelID, &discordgo.MessageEmbed{
+		Color:       15158332,
+		Title:       fmt.Sprintf("%s's Cofy profile not found", discordUser.Username),
+		Description: "This user has not created a profile yet. ",
+		Thumbnail:   &discordgo.MessageEmbedThumbnail{URL: discordUser.AvatarURL(""), Width: 10, Height: 10},
+		Footer:      &discordgo.MessageEmbedFooter{Text: "For a user to create a profile, he just need to send a message and his profile will be created automatically."},
 	})
 }

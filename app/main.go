@@ -2,7 +2,6 @@ package main
 
 import (
 	"flag"
-	"fmt"
 	"net/http"
 	"os"
 	"os/signal"
@@ -39,36 +38,29 @@ func messageCreationHandler(s *discordgo.Session, m *discordgo.MessageCreate) {
 		return
 	}
 
-	// if the message is not a command
-	if !strings.HasPrefix(m.Content, core.Prefix) {
+	// if the message is  a command
+	if strings.HasPrefix(m.Content, core.Prefix) {
+		commands.ProfileCommandHandler(s, m)
+		// commands.Info(s, m)
+		// commands.Dev(s, m)
+	} else {
 		// systematically get user each time someone create a message
 		user := middlewares.GetUser(s, m.Author.ID)
 		// if the user is not found, create a new user in db
 		services.UserNotFoundHandler(s, m, user)
 		// then update gains
 		services.GainsHandler(s, m, user)
-
-	} else {
-		commands.ProfileCommandHandler(s, m)
-		// commands.Info(s, m)
-		// commands.Dev(s, m)
 	}
-
 }
 
 func MessageReactionHandler(s *discordgo.Session, m *discordgo.MessageCreate) {
-
-	matched, err := regexp.MatchString(`coffee|coffe|cofee|cofe|cafe|café`, m.Content)
-	fmt.Println(matched, err)
-
+	matched, _ := regexp.MatchString(`coffee|coffe|cofee|cofe|cafe|café`, m.Content)
 	if matched == true {
 		if m.Author.ID == s.State.User.ID {
 			return
 		}
 		s.MessageReactionAdd(m.ChannelID, m.ID, "☕")
-
 	}
-
 }
 
 func setupSession() {
@@ -76,10 +68,7 @@ func setupSession() {
 
 	// Create a new Discord session using the provided bot token.
 	dg, err := discordgo.New("Bot " + Token)
-	if err != nil {
-		fmt.Println("error creating Discord session,", err)
-		return
-	}
+	helpers.ExitOnError("error creating Discord session,", err)
 
 	// Register the messageCreate func as a callback for MessageCreate events.
 	dg.AddHandler(messageCreationHandler)
@@ -90,13 +79,10 @@ func setupSession() {
 
 	// Open a websocket connection to Discord and begin listening.
 	err = dg.Open()
-	if err != nil {
-		fmt.Println("error opening connection,", err)
-		return
-	}
+	helpers.ExitOnError("Error while connection,", err)
 
 	// Wait here until CTRL-C or other term signal is received.
-	log.Info("Bot is now running.  Press CTRL-C to exit.")
+	log.Info("[BOT] :: UP :: [BOT]")
 	sc := make(chan os.Signal, 1)
 	signal.Notify(sc, syscall.SIGINT, syscall.SIGTERM, os.Interrupt, os.Kill)
 	<-sc
@@ -107,8 +93,6 @@ func setupSession() {
 
 func pingApi() {
 	_, err := http.Get(helpers.EnvVar("API_URL"))
-	if err != nil {
-		log.Fatal(err)
-	}
-	log.Info("API available !")
+	helpers.ExitOnError("error while connecting through API", err)
+	log.Info("[API] :: UP :: [API]")
 }
