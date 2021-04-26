@@ -9,14 +9,19 @@ import (
 )
 
 func EmbedViewProfile(s *discordgo.Session, m *discordgo.MessageCreate, user core.User, discordUser *discordgo.User) {
+	XpAway :=int(GetXpFromLevel(user.Level + 1) - float64(user.Xp))
+	diff := 100 - (XpAway * 100) / int(GetXpFromLevel(user.Level + 1) - GetXpFromLevel(user.Level))
+
 	s.ChannelMessageSendEmbed(m.ChannelID, &discordgo.MessageEmbed{
 		Color:       1752220,
 		Title:       fmt.Sprintf("%s's Cofy profile", discordUser.Username),
-		Description: fmt.Sprintf("ID: %s", discordUser.ID),
+		Description:  discordUser.Discriminator,
 		Thumbnail:   &discordgo.MessageEmbedThumbnail{URL: discordUser.AvatarURL(""), Width: 10, Height: 10},
 		Fields: []*discordgo.MessageEmbedField{
-			{Name: ":coin: CF:", Value: strconv.Itoa(user.Coins), Inline: true},
-			{Name: ":chart_with_upwards_trend: XP:", Value: strconv.Itoa(user.Xp), Inline: true},
+			{Name: ":medal: Level:", Value: strconv.Itoa(user.Level)},
+			{Name: ":trophy: Next level:", Value: fmt.Sprintf("%dxp away (%d%%)", XpAway, diff)},
+			{Name: ":coin: CF:", Value: strconv.Itoa(user.Coins)},
+			{Name: ":chart_with_upwards_trend: XP:", Value: strconv.Itoa(user.Xp)},
 		},
 		Footer: &discordgo.MessageEmbedFooter{Text: fmt.Sprintf("Member since %s", user.CreatedAt.Format("01-02-2006"))},
 	})
@@ -39,10 +44,10 @@ func EmbedCreatingProfile(s *discordgo.Session, m *discordgo.MessageCreate) {
 	})
 }
 
-func EmbedViewGains(s *discordgo.Session, m *discordgo.MessageCreate, gainedCoins int, gainedXp int) {
+func EmbedViewGains(s *discordgo.Session, m *discordgo.MessageCreate, gains core.Gains) {
 	s.ChannelMessageSendEmbed(m.ChannelID, &discordgo.MessageEmbed{
 		Color: 1146986,
-		Title: fmt.Sprintf("[DEBUG] :coin: CF: +%d / :chart_with_upwards_trend: +%d", gainedCoins, gainedXp),
+		Title: fmt.Sprintf("[DEBUG] :coin: CF: +%d / :chart_with_upwards_trend: +%d", gains.Coins, gains.Xp),
 	})
 }
 
