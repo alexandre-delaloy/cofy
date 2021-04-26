@@ -3,7 +3,6 @@ package commands
 import (
 	"github.com/blyndusk/cofy/app/core"
 	"github.com/blyndusk/cofy/app/services"
-	log "github.com/sirupsen/logrus"
 
 	"github.com/bwmarrin/discordgo"
 )
@@ -13,7 +12,7 @@ type devCommand struct {
 	stringResponse string
 }
 
-func Dev(s *discordgo.Session, m *discordgo.MessageCreate) {
+func DevCommandHandler(s *discordgo.Session, m *discordgo.MessageCreate) {
 	cmd := devCommand{
 		base: core.BaseCommand{
 			Name:        "dev",
@@ -23,23 +22,16 @@ func Dev(s *discordgo.Session, m *discordgo.MessageCreate) {
 		stringResponse: "API: http://localhost:3003\nADM: http://localhost:3002",
 	}
 
-	if services.MatchCommand(false, s, m, cmd.base.Aliases) == true {
-		log.Info("cmd | execute | dev")
+	if services.MatchExecuteCommand(s, m, cmd.base.Aliases) == true {
 		services.CallExecute(cmd, s, m)
 	}
-	if services.MatchCommand(true, s, m, cmd.base.Aliases) == true {
-		log.Info("cmd | help | idevfo")
+	if services.MatchHelpCommand(s, m, cmd.base.Aliases) == true {
 		services.CallHelp(cmd, s, m)
 	}
 }
 
 func (cmd devCommand) Execute(s *discordgo.Session, m *discordgo.MessageCreate) {
-	user := services.GetUser(s, m.Author.ID)
-	// t1, _:= time.Parse(
-	// 	time.RFC3339,
-	// 	user.CreatedAt)
-	log.Info(user.CreatedAt.Format("01-02-2006"))
-
+	s.ChannelMessageSend(m.ChannelID, cmd.stringResponse)
 }
 
 func (cmd devCommand) Help(s *discordgo.Session, m *discordgo.MessageCreate) {

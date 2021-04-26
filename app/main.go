@@ -1,9 +1,10 @@
 package main
 
 import (
+	"encoding/json"
 	"flag"
 	"fmt"
-	"math"
+	"io/ioutil"
 	"net/http"
 	"os"
 	"os/signal"
@@ -14,6 +15,7 @@ import (
 	"github.com/blyndusk/cofy/app/commands"
 	"github.com/blyndusk/cofy/app/core"
 	"github.com/blyndusk/cofy/app/helpers"
+	"github.com/blyndusk/cofy/app/middlewares"
 	"github.com/blyndusk/cofy/app/services"
 	"github.com/bwmarrin/discordgo"
 	log "github.com/sirupsen/logrus"
@@ -22,7 +24,6 @@ import (
 func init() {
 	// get Discord token
 	Token := helpers.EnvVar("BOT_TOKEN")
-
 	// create a variable named "t", as the bot token
 	flag.StringVar(&Token, "t", "", "Bot Token")
 	flag.Parse()
@@ -33,78 +34,75 @@ func main() {
 	setupSession()
 }
 
-func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
-	if m.Author.ID == s.State.User.ID {
-		return
+func pingApi() {
+	type Ping struct {
+		Message string
 	}
-
-	commands.Info(s, m)
-	commands.Profile(s, m)
-	commands.Dev(s, m)
-
-	if !strings.HasPrefix(m.Content, core.Prefix) {
-		gainedCoins := int(math.Round(float64(len(m.Content)) / 10))
-		gainedXp := int(math.Round(float64(len(m.Content)) / 5))
-		services.UpdateGains(s, m, gainedCoins, gainedXp)
-		services.EmbedViewGainss(s, m, gainedCoins, gainedXp)
-
+	var ping Ping
+	// get /ping route
+	resp, err := http.Get(fmt.Sprintf("%s/ping", helpers.EnvVar("API_URL")))
+	helpers.ExitOnError("error while connecting through API", err)
+	defer resp.Body.Close()
+	body, err := ioutil.ReadAll(resp.Body)
+	json.Unmarshal(body, &ping)
+	// if GET /ping => "pong"
+	if ping.Message == "pong" {
+		log.Info("[API] :: UP :: [API]")
 	}
-
-}
-
-func reactToCoffee(s *discordgo.Session, m *discordgo.MessageCreate) {
-
-	matched, err := regexp.MatchString(`coffee|coffe|cofee|cofe|cafe|café`, m.Content)
-	fmt.Println(matched, err)
-
-	if matched == true {
-		if m.Author.ID == s.State.User.ID {
-			return
-		}
-		s.MessageReactionAdd(m.ChannelID, m.ID, "☕")
-
-	}
-
 }
 
 func setupSession() {
-	Token := os.Getenv("BOT_TOKEN")
-
+	token := os.Getenv("BOT_TOKEN")
 	// Create a new Discord session using the provided bot token.
-	dg, err := discordgo.New("Bot " + Token)
-	if err != nil {
-		fmt.Println("error creating Discord session,", err)
-		return
-	}
-
+	dg, err := discordgo.New("Bot " + token)
+	helpers.ExitOnError("error creating Discord session,", err)
 	// Register the messageCreate func as a callback for MessageCreate events.
-	dg.AddHandler(messageCreate)
-	dg.AddHandler(reactToCoffee)
-
+	dg.AddHandler(messageCreationHandler)
+	dg.AddHandler(MessageReactionHandler)
 	// In this example, we only care about receiving message events.
 	dg.Identify.Intents = discordgo.IntentsGuildMessages
-
 	// Open a websocket connection to Discord and begin listening.
 	err = dg.Open()
-	if err != nil {
-		fmt.Println("error opening connection,", err)
-		return
-	}
-
+	helpers.ExitOnError("Error while connection,", err)
 	// Wait here until CTRL-C or other term signal is received.
-	log.Info("Bot is now running.  Press CTRL-C to exit.")
+	log.Info("[BOT] :: UP :: [BOT]")
 	sc := make(chan os.Signal, 1)
 	signal.Notify(sc, syscall.SIGINT, syscall.SIGTERM, os.Interrupt, os.Kill)
 	<-sc
-
 	// Cleanly close down the Discord session.
 	dg.Close()
 }
 
-func pingApi() {
-	_, err := http.Get(helpers.EnvVar("API_URL"))
-	if err != nil {
-		log.Fatal(err)
+func messageCreationHandler(s *discordgo.Session, m *discordgo.MessageCreate) {
+	// if the message author is the bot itself, return to avoid infinite loops
+	if m.Author.ID == s.State.User.ID {
+		return
 	}
-	log.Info("API available !")
+	// if the message is not a command
+	if !strings.HasPrefix(m.Content, core.Prefix) {
+		// systematically get user each time someone create a message
+		user := middlewares.GetUser(s, m.Author.ID)
+		// if the user is not found, create a new user in db
+		services.HandleUserNotFound(s, m, user)
+		// then update gains
+		services.HandleGains(s, m, user)
+	} else {
+		// setup command handlers
+		commands.ProfileCommandHandler(s, m)
+		commands.InfoCommandHandler(s, m)
+		commands.DevCommandHandler(s, m)
+	}
+}
+
+func MessageReactionHandler(s *discordgo.Session, m *discordgo.MessageCreate) {
+	// if the message contain one of the case
+	matched, _ := regexp.MatchString(`coffee|coffe|cofee|cofe|cafe|café`, m.Content)
+	if matched == true {
+		// if the message author is the bot itself, return to avoid infinite loops
+		if m.Author.ID == s.State.User.ID {
+			return
+		}
+		// react with coffee emoji
+		s.MessageReactionAdd(m.ChannelID, m.ID, "☕")
+	}
 }
