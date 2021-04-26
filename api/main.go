@@ -23,6 +23,12 @@ func setupServer() *gin.Engine {
 			"message": "[Cofy API]",
 		})
 	})
+
+	r.GET("/ping", func(c *gin.Context) {
+		c.JSON(http.StatusOK, gin.H{
+			"message": "pong",
+		})
+	})
 	router.Setup(r)
 	r.Run(":3003")
 	return r
