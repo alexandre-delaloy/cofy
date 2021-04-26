@@ -6,6 +6,7 @@ import (
 	"strings"
 
 	"github.com/blyndusk/cofy/app/core"
+	"github.com/blyndusk/cofy/app/middlewares"
 	"github.com/bwmarrin/discordgo"
 	"github.com/sirupsen/logrus"
 )
@@ -50,7 +51,7 @@ func SeeOtheruserProfile(s *discordgo.Session, m *discordgo.MessageCreate, alias
 	}
 	logrus.Info(doesMatch)
 	if doesMatch {
-		user := GetUser(s, otherUserId)
+		user := middlewares.GetUser(s, otherUserId)
 		discordUser, _ := s.User(otherUserId)
 		EmbedViewProfile(s, m, user, discordUser)
 	}
