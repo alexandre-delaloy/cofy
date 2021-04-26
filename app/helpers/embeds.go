@@ -12,7 +12,7 @@ func EmbedViewProfile(s *discordgo.Session, m *discordgo.MessageCreate, user cor
 	s.ChannelMessageSendEmbed(m.ChannelID, &discordgo.MessageEmbed{
 		Color:       1752220,
 		Title:       fmt.Sprintf("%s's Cofy profile", discordUser.Username),
-		Description: fmt.Sprintf("ID: %s", discordUser.ID),
+		Description: fmt.Sprintf("Level: %d", user.Level),
 		Thumbnail:   &discordgo.MessageEmbedThumbnail{URL: discordUser.AvatarURL(""), Width: 10, Height: 10},
 		Fields: []*discordgo.MessageEmbedField{
 			{Name: ":coin: CF:", Value: strconv.Itoa(user.Coins), Inline: true},
@@ -39,10 +39,10 @@ func EmbedCreatingProfile(s *discordgo.Session, m *discordgo.MessageCreate) {
 	})
 }
 
-func EmbedViewGains(s *discordgo.Session, m *discordgo.MessageCreate, gainedCoins int, gainedXp int) {
+func EmbedViewGains(s *discordgo.Session, m *discordgo.MessageCreate, gains core.Gains) {
 	s.ChannelMessageSendEmbed(m.ChannelID, &discordgo.MessageEmbed{
 		Color: 1146986,
-		Title: fmt.Sprintf("[DEBUG] :coin: CF: +%d / :chart_with_upwards_trend: +%d", gainedCoins, gainedXp),
+		Title: fmt.Sprintf("[DEBUG] :coin: CF: +%d / :chart_with_upwards_trend: +%d", gains.Coins, gains.Xp),
 	})
 }
 

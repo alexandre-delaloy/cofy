@@ -4,7 +4,7 @@ import (
 	"math"
 )
 
-func GetLevel(xp int) int64 {
-	return int64(0.1666  * math.Sqrt(float64(xp)))
+func GetLevelFromXp(xp int) int {
+	return int(0.1666 * math.Sqrt(float64(xp)))
 
 }
