@@ -9,28 +9,7 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
-func EmbedProfileNotFound(s *discordgo.Session, m *discordgo.MessageCreate) {
-	s.ChannelMessageSendEmbed(m.ChannelID, &discordgo.MessageEmbed{
-		Color: 15158332,
-		Title: "Profile not found !",
-	})
-}
-
-func EmbedProfileCreating(s *discordgo.Session, m *discordgo.MessageCreate) {
-	s.ChannelMessageSendEmbed(m.ChannelID, &discordgo.MessageEmbed{
-		Color: 15105570,
-		Title: "Creating profile...",
-	})
-}
-
-func EmbedProfileCreated(s *discordgo.Session, m *discordgo.MessageCreate) {
-	s.ChannelMessageSendEmbed(m.ChannelID, &discordgo.MessageEmbed{
-		Color: 3066993,
-		Title: "Profile created !",
-	})
-}
-
-func EmbedViewProfile(s *discordgo.Session, m *discordgo.MessageCreate, user core.User, discordUser *discordgo.User,) {
+func EmbedViewProfile(s *discordgo.Session, m *discordgo.MessageCreate, user core.User, discordUser *discordgo.User) {
 	logrus.Info("discord - user")
 	logrus.Info(discordUser)
 	s.ChannelMessageSendEmbed(m.ChannelID, &discordgo.MessageEmbed{
@@ -47,7 +26,15 @@ func EmbedViewProfile(s *discordgo.Session, m *discordgo.MessageCreate, user cor
 
 }
 
-func EmbedViewGainss(s *discordgo.Session, m *discordgo.MessageCreate, gainedCoins int, gainedXp int) {
+func EmbedCreatingProfile(s *discordgo.Session, m *discordgo.MessageCreate) {
+	s.ChannelMessageSendEmbed(m.ChannelID, &discordgo.MessageEmbed{
+		Color:       3447003,
+		Title:       "Creating profile...",
+	})
+
+}
+
+func EmbedViewGains(s *discordgo.Session, m *discordgo.MessageCreate, gainedCoins int, gainedXp int) {
 
 	s.ChannelMessageSendEmbed(m.ChannelID, &discordgo.MessageEmbed{
 		Color: 1146986,

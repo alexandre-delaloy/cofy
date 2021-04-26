@@ -3,7 +3,6 @@ package main
 import (
 	"flag"
 	"fmt"
-	"math"
 	"net/http"
 	"os"
 	"os/signal"
@@ -14,6 +13,7 @@ import (
 	"github.com/blyndusk/cofy/app/commands"
 	"github.com/blyndusk/cofy/app/core"
 	"github.com/blyndusk/cofy/app/helpers"
+	"github.com/blyndusk/cofy/app/middlewares"
 	"github.com/blyndusk/cofy/app/services"
 	"github.com/bwmarrin/discordgo"
 	log "github.com/sirupsen/logrus"
@@ -33,26 +33,30 @@ func main() {
 	setupSession()
 }
 
-func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
+func messageCreationHandler(s *discordgo.Session, m *discordgo.MessageCreate) {
+	// if the message author is the bot itself, return to avoid infinite loops
 	if m.Author.ID == s.State.User.ID {
 		return
 	}
 
-	commands.Info(s, m)
-	commands.Profile(s, m)
-	commands.Dev(s, m)
-
+	// if the message is not a command
 	if !strings.HasPrefix(m.Content, core.Prefix) {
-		gainedCoins := int(math.Round(float64(len(m.Content)) / 10))
-		gainedXp := int(math.Round(float64(len(m.Content)) / 5))
-		services.UpdateGains(s, m, gainedCoins, gainedXp)
-		services.EmbedViewGainss(s, m, gainedCoins, gainedXp)
+		// systematically get user each time someone create a message
+		user := middlewares.GetUser(s, m.Author.ID)
+		// if the user is not found, create a new user in db
+		services.UserNotFoundHandler(s, m, user)
+		// then update gains
+		services.GainsHandler(s, m, user)
 
+	} else {
+		commands.ProfileCommandHandler(s, m)
+		// commands.Info(s, m)
+		// commands.Dev(s, m)
 	}
 
 }
 
-func reactToCoffee(s *discordgo.Session, m *discordgo.MessageCreate) {
+func MessageReactionHandler(s *discordgo.Session, m *discordgo.MessageCreate) {
 
 	matched, err := regexp.MatchString(`coffee|coffe|cofee|cofe|cafe|café`, m.Content)
 	fmt.Println(matched, err)
@@ -78,8 +82,8 @@ func setupSession() {
 	}
 
 	// Register the messageCreate func as a callback for MessageCreate events.
-	dg.AddHandler(messageCreate)
-	dg.AddHandler(reactToCoffee)
+	dg.AddHandler(messageCreationHandler)
+	dg.AddHandler(MessageReactionHandler)
 
 	// In this example, we only care about receiving message events.
 	dg.Identify.Intents = discordgo.IntentsGuildMessages
