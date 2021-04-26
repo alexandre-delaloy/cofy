@@ -13,6 +13,7 @@ import (
 
 	"github.com/blyndusk/cofy/app/commands"
 	"github.com/blyndusk/cofy/app/core"
+	"github.com/blyndusk/cofy/app/helpers"
 	"github.com/blyndusk/cofy/app/services"
 	"github.com/bwmarrin/discordgo"
 	log "github.com/sirupsen/logrus"
@@ -20,7 +21,7 @@ import (
 
 func init() {
 	// get Discord token
-	Token := services.EnvVar("BOT_TOKEN")
+	Token := helpers.EnvVar("BOT_TOKEN")
 
 	// create a variable named "t", as the bot token
 	flag.StringVar(&Token, "t", "", "Bot Token")
@@ -50,7 +51,6 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 	}
 
 }
-
 
 func reactToCoffee(s *discordgo.Session, m *discordgo.MessageCreate) {
 
@@ -102,7 +102,7 @@ func setupSession() {
 }
 
 func pingApi() {
-	_, err := http.Get(services.EnvVar("API_URL"))
+	_, err := http.Get(helpers.EnvVar("API_URL"))
 	if err != nil {
 		log.Fatal(err)
 	}
