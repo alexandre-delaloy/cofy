@@ -1,17 +1,21 @@
 package commands
 
 import (
+	"strconv"
+
 	"github.com/blyndusk/cofy/app/core"
+	"github.com/blyndusk/cofy/app/helpers"
+	"github.com/blyndusk/cofy/app/middlewares"
 	"github.com/blyndusk/cofy/app/services"
 	"github.com/bwmarrin/discordgo"
-	log "github.com/sirupsen/logrus"
 )
 
 type profileCommand struct {
 	base core.BaseCommand
 }
 
-func Profile(s *discordgo.Session, m *discordgo.MessageCreate) {
+func ProfileCommandHandler(s *discordgo.Session, m *discordgo.MessageCreate) {
+	// init new command
 	cmd := profileCommand{
 		base: core.BaseCommand{
 			Name:        "profile",
@@ -19,30 +23,37 @@ func Profile(s *discordgo.Session, m *discordgo.MessageCreate) {
 			Description: "Give informations about you.",
 		},
 	}
-
-	if services.MatchCommand(false, s, m, cmd.base.Aliases) == true {
-		log.Info("cmd | execute | profile")
+	// core methods
+	if services.MatchExecuteCommand(s, m, cmd.base.Aliases) == true {
 		services.CallExecute(cmd, s, m)
-
 	}
-	if services.MatchCommand(true, s, m, cmd.base.Aliases) == true {
-		log.Info("cmd | help | profile")
+
+	if services.MatchHelpCommand(s, m, cmd.base.Aliases) == true {
 		services.CallHelp(cmd, s, m)
 	}
-	services.SeeOtheruserProfile(s, m, cmd.base.Aliases)
-}
 
-func (command profileCommand) Execute(s *discordgo.Session, m *discordgo.MessageCreate) {
-	user := services.GetUser(s, m.Author.ID)
-
-	services.CreateUserIfDoesntExist(user, s, m)
-	if user.DiscordId == m.Author.ID {
-		discordUser, _ := s.User(user.DiscordId)
-		services.EmbedViewProfile(s, m, user, discordUser)
+	if services.MatchTaggedUserProfileCommand(s, m, cmd.base.Aliases) == true {
+		services.ViewTaggedUserProfile(s, m, cmd.base.Aliases)
 	}
-
 }
 
+// execute method
+func (cmd profileCommand) Execute(s *discordgo.Session, m *discordgo.MessageCreate) {
+	// systematically get user each time someone createw a message
+	user := middlewares.GetUser(s, m.Author.ID)
+	// if the id of the user is not the author id, user doesnt exist
+	if strconv.Itoa(user.DiscordId) != m.Author.ID {
+		// if the user is not found, create a new user in db
+		services.HandleUserNotFound(s, m, user)
+	} else {
+		// get the discord user from the session using discordId
+		discordUser, _ := s.User(strconv.Itoa(user.DiscordId))
+		// display profile
+		helpers.EmbedViewProfile(s, m, user, discordUser)
+	}
+}
+
+// help method
 func (cmd profileCommand) Help(s *discordgo.Session, m *discordgo.MessageCreate) {
 	s.ChannelMessageSend(m.ChannelID, cmd.base.Description)
 }
