@@ -1,6 +1,8 @@
 package commands
 
 import (
+	"fmt"
+
 	"github.com/blyndusk/cofy/app/core"
 	"github.com/blyndusk/cofy/app/services"
 
@@ -31,7 +33,11 @@ func DevCommandHandler(s *discordgo.Session, m *discordgo.MessageCreate) {
 }
 
 func (cmd devCommand) Execute(s *discordgo.Session, m *discordgo.MessageCreate) {
-	s.ChannelMessageSend(m.ChannelID, cmd.stringResponse)
+	// s.ChannelMessageSend(m.ChannelID, cmd.stringResponse)
+	for i := 0; i < 11; i++ {
+		s.ChannelMessageSend(m.ChannelID, fmt.Sprintf("%d - %f", i, helpers.GetXpFromLevel(i)))
+
+	}
 }
 
 func (cmd devCommand) Help(s *discordgo.Session, m *discordgo.MessageCreate) {

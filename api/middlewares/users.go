@@ -73,5 +73,6 @@ func hydrateUser(input *models.UserInput) models.User {
 		Name:      input.Name,
 		Coins:     input.Coins,
 		Xp:        input.Xp,
+		Level:     input.Level,
 	}
 }

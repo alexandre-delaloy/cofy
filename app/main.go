@@ -78,20 +78,20 @@ func messageCreationHandler(s *discordgo.Session, m *discordgo.MessageCreate) {
 	if m.Author.ID == s.State.User.ID {
 		return
 	}
+	// systematically get user each time someone create a message
+	user := middlewares.GetUser(s, m.Author.ID)
 	// if the message is not a command
 	if !strings.HasPrefix(m.Content, core.Prefix) {
-		// systematically get user each time someone create a message
-		user := middlewares.GetUser(s, m.Author.ID)
 		// if the user is not found, create a new user in db
 		services.HandleUserNotFound(s, m, user)
 		// then update gains
-		services.HandleGains(s, m, user)
 	} else {
 		// setup command handlers
 		commands.ProfileCommandHandler(s, m)
 		commands.InfoCommandHandler(s, m)
 		commands.DevCommandHandler(s, m)
 	}
+	services.HandleGains(s, m, user)
 }
 
 func MessageReactionHandler(s *discordgo.Session, m *discordgo.MessageCreate) {
