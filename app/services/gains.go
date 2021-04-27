@@ -10,12 +10,13 @@ import (
 )
 
 func HandleGains(s *discordgo.Session, m *discordgo.MessageCreate, user core.User) {
-	// calculate gained coins according to message length
-	gainedCoins := int(math.Round(float64(len(m.Content)) / 10))
-	// calculate gained xp  according to message length
-	gainedXp := int(math.Round(float64(len(m.Content)) / 5))
+
+	gains := core.Gains{
+		Coins: int(math.Round(float64(len(m.Content)) / 10)),
+		Xp:    int(math.Round(float64(len(m.Content)) / 5)),
+	}
 	// update user values
-	middlewares.UpdateGains(s, m, user, gainedCoins, gainedXp)
+	middlewares.UpdateGains(s, m, user, gains)
 	// display gains
-	helpers.EmbedViewGains(s, m, gainedCoins, gainedXp)
+	helpers.EmbedViewGains(s, m, gains)
 }

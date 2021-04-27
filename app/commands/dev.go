@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/blyndusk/cofy/app/core"
+	"github.com/blyndusk/cofy/app/helpers"
 	"github.com/blyndusk/cofy/app/services"
 
 	"github.com/bwmarrin/discordgo"

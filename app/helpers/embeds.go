@@ -45,10 +45,10 @@ func EmbedCreatingProfile(s *discordgo.Session, m *discordgo.MessageCreate) {
 	})
 }
 
-func EmbedViewGains(s *discordgo.Session, m *discordgo.MessageCreate, gainedCoins int, gainedXp int) {
+func EmbedViewGains(s *discordgo.Session, m *discordgo.MessageCreate, gains core.Gains) {
 	s.ChannelMessageSendEmbed(m.ChannelID, &discordgo.MessageEmbed{
 		Color: 1146986,
-		Title: fmt.Sprintf("[DEBUG] :coin: CF: +%d / :chart_with_upwards_trend: +%d", gainedCoins, gainedXp),
+		Title: fmt.Sprintf("[DEBUG] :coin: CF: +%d / :chart_with_upwards_trend: +%d", gains.Coins, gains.Xp),
 	})
 }
 

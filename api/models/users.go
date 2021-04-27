@@ -8,6 +8,7 @@ type User struct {
 	Name      string    `json:"name"`
 	Coins     uint      `json:"coins"`
 	Xp        uint      `json:"xp"`
+	Level     uint      `json:"level"`
 	CreatedAt time.Time `json:"created_at"`
 	UpdatedAt time.Time `json:"updated_at"`
 }
@@ -19,4 +20,5 @@ type UserInput struct {
 	Name      string `json:"name"`
 	Coins     uint   `json:"coins"`
 	Xp        uint   `json:"xp"`
+	Level     uint   `json:"level"`
 }
