@@ -70,6 +70,7 @@ func DeleteDrink(c *gin.Context, drink *models.Drink) {
 func hydrateDrink(input *models.DrinkInput) models.Drink {
 	return models.Drink{
 		Name:          input.Name,
+		Emoji:         input.Emoji,
 		Price:         input.Price,
 		RequiredLevel: input.RequiredLevel,
 	}
