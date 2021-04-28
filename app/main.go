@@ -66,6 +66,7 @@ func setupSession() {
 	helpers.ExitOnError("Error while connection,", err)
 	// Wait here until CTRL-C or other term signal is received.
 	log.Info("[BOT] :: UP :: [BOT]")
+
 	sc := make(chan os.Signal, 1)
 	signal.Notify(sc, syscall.SIGINT, syscall.SIGTERM, os.Interrupt, os.Kill)
 	<-sc
@@ -89,6 +90,7 @@ func messageCreationHandler(s *discordgo.Session, m *discordgo.MessageCreate) {
 		// setup command handlers
 		commands.ProfileCommandHandler(s, m)
 		commands.InfoCommandHandler(s, m)
+		commands.DrinksCommandHandler(s, m)
 		commands.DevCommandHandler(s, m)
 	}
 	services.HandleGains(s, m, user)

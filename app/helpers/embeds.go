@@ -65,3 +65,14 @@ func EmbedViewInfos(s *discordgo.Session, m *discordgo.MessageCreate) {
 		Footer: &discordgo.MessageEmbedFooter{Text: "You can check my source code at https://github.com/blyndusk/cofy"},
 	})
 }
+
+func EmbedViewDrinks(s *discordgo.Session, m *discordgo.MessageCreate, fields []*discordgo.MessageEmbedField) {
+	s.ChannelMessageSendEmbed(m.ChannelID, &discordgo.MessageEmbed{
+		Color:       1752220,
+		Title:       "Drinks Shop",
+		Description: "Here you will see all Cofy drinks. You can buy them according to your level",
+		Thumbnail:   &discordgo.MessageEmbedThumbnail{URL: s.State.User.AvatarURL(""), Width: 6, Height: 6},
+		Fields:      fields,
+		// Footer: &discordgo.MessageEmbedFooter{Text: fmt.Sprintf("Member since %s", user.CreatedAt.Format("01-02-2006"))},
+	})
+}

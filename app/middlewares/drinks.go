@@ -14,9 +14,9 @@ import (
 func GetDrinks(s *discordgo.Session) core.Drinks {
 	// setup url
 	url := fmt.Sprintf("%s/drinks", helpers.EnvVar("API_URL"))
-	// declare user
+	// declare drinks
 	var drinks core.Drinks
-	// get the user
+	// get drinkks
 	resp, err := http.Get(url)
 	helpers.ExitOnError("Error while getting user", err)
 	defer resp.Body.Close()
