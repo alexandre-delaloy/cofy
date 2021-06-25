@@ -1,7 +1,7 @@
 # Commit convention
 
 ```
-tag(scope): #issue_id message
+tag(scope): #issue_id - message
 ```
 
 ## Tag
