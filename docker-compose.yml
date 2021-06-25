@@ -4,8 +4,8 @@ services:
   app:
     container_name: cofy_app
     build:
-      context: app/
-      dockerfile: ../.docker/app/dev.Dockerfile
+      context: .
+      dockerfile: .docker/app/dev.Dockerfile
     volumes:
       - ./app:/go/src/github.com/blyndusk/cofy/app
     networks:
@@ -13,8 +13,8 @@ services:
   api:
     container_name: cofy_api
     build:
-      context: api/
-      dockerfile: ../.docker/api/dev.Dockerfile
+      context: .
+      dockerfile: .docker/api/dev.Dockerfile
     ports:
       - 3003:3003
     volumes:

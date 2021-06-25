@@ -40,7 +40,7 @@ func pingApi() {
 	}
 	var ping Ping
 	// get /ping route
-	resp, err := http.Get(fmt.Sprintf("%s/ping", helpers.EnvVar("API_URL")))
+	resp, err := http.Get(fmt.Sprintf("%s/ping", core.ApiUrl))
 	helpers.ExitOnError("error while connecting through API", err)
 	defer resp.Body.Close()
 	body, err := ioutil.ReadAll(resp.Body)

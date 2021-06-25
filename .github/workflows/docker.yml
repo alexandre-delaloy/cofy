@@ -6,38 +6,62 @@ on:
       - main
 
 jobs:
-  DOCKER-APP:
-    name: DOCKER APP
-    runs-on: ubuntu-latest
-    steps:
-      - name: 1 - CHECKOUT
-        uses: actions/checkout@v2
-
-      - name: 2 - BUILD + PUSH DOCKER IMG TO GITHUB PACKAGE REGISTRY
-        uses: docker/build-push-action@v1
-        with:
-          username: ${{ github.actor }}
-          password: ${{ secrets.GPAT }}
-          workdir: .docker/app
-          dockerfile: .docker/app/prod.Dockerfile
-          registry: docker.pkg.github.com
-          repository: blyndusk/cofy/cofy_app
-          tags: "latest"
-
   DOCKER-API:
     name: DOCKER API
     runs-on: ubuntu-latest
     steps:
+        # checkout to current workspace
       - name: 1 - CHECKOUT
         uses: actions/checkout@v2
 
-      - name: 2 - BUILD + PUSH DOCKER IMG TO GITHUB PACKAGE REGISTRY
-        uses: docker/build-push-action@v1
+        # login to container registry
+      - name: 2 - LOGIN TO GHCR.IO
+        uses: docker/login-action@v1
         with:
-          username: ${{ github.actor }}
-          password: ${{ secrets.GPAT }}
-          workdir: .docker/api
-          dockerfile: .docker/api/prod.Dockerfile
-          registry: docker.pkg.github.com
-          repository: blyndusk/cofy/cofy_api
-          tags: "latest"
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+        # build and push the app with given file and tag
+      - name: 3 - BUILD + PUSH
+        id: docker_build
+        uses: docker/build-push-action@v2
+        with:
+          push: true
+          context: .
+          file: .docker/api/prod.Dockerfile
+          tags: ghcr.io/blyndusk/cofy_api:latest
+
+        # output the logs
+      - name: 4 - IMAGE DIGEST
+        run: echo ${{ steps.docker_build.outputs.digest }}
+
+  DOCKER-APP:
+    name: DOCKER APP
+    runs-on: ubuntu-latest
+    steps:
+        # checkout to current workspace
+      - name: 1 - CHECKOUT
+        uses: actions/checkout@v2
+
+        # login to container registry
+      - name: 2 - LOGIN TO GHCR.IO
+        uses: docker/login-action@v1
+        with:
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+        # build and push the app with given file and tag
+      - name: 3 - BUILD + PUSH
+        id: docker_build
+        uses: docker/build-push-action@v2
+        with:
+          push: true
+          context: .
+          file: .docker/api/prod.Dockerfile
+          tags: ghcr.io/blyndusk/cofy_app:latest
+
+        # output the logs
+      - name: 4 - IMAGE DIGEST
+        run: echo ${{ steps.docker_build.outputs.digest }}

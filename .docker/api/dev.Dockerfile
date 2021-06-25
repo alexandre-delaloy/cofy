@@ -1,17 +1,30 @@
 FROM golang:alpine
 
+# ----- SETUP -----
+
+# Enable Go modules
+ENV GO111MODULE=on
+
+# Set the current working with go absolute path
 WORKDIR /go/src/github.com/blyndusk/cofy/api
 
-COPY go.mod .
+# ----- INSTALL -----
 
-COPY go.sum .
+# Copy go.mod + go.sum for install before full copy
+COPY api/go.mod .
 
-RUN go mod download
+COPY api/go.sum .
 
+# Download all dependencies
+RUN go mod download -x
+
+# ----- COPY + RUN -----
+
+# Copy the source from the current directory to the container
+COPY api/ .
+
+# Install 'air' live-reload go module
 RUN go get -u github.com/cosmtrek/air
 
-COPY . .
-
-EXPOSE 3003
-
-ENTRYPOINT [ "/go/bin/air" ]
+# Use the excutable
+ENTRYPOINT ["/go/bin/air"]
