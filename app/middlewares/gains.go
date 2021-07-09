@@ -22,7 +22,7 @@ func UpdateGains(s *discordgo.Session, m *discordgo.MessageCreate, user core.Use
 	logrus.Info("new gains")
 	logrus.Info(newGains)
 	// setup url
-	url := fmt.Sprintf("%s/users/%s", helpers.EnvVar("API_URL"), m.Author.ID)
+	url := fmt.Sprintf("%s/users/%s", core.ApiUrl, m.Author.ID)
 	// setup payload
 	payload, err := json.Marshal(map[string]interface{}{
 		"coins": newGains.Coins,

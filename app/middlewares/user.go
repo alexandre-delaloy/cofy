@@ -15,7 +15,7 @@ import (
 
 func GetUser(s *discordgo.Session, userId string) core.User {
 	// setup url
-	url := fmt.Sprintf("%s/users/%s", helpers.EnvVar("API_URL"), userId)
+	url := fmt.Sprintf("%s/users/%s", core.ApiUrl, userId)
 	// declare user
 	var user core.User
 	// get the user
@@ -30,7 +30,7 @@ func GetUser(s *discordgo.Session, userId string) core.User {
 
 func CreateUser(discordUser *discordgo.User) {
 	// setup url
-	url := fmt.Sprintf("%s/users", helpers.EnvVar("API_URL"))
+	url := fmt.Sprintf("%s/users", core.ApiUrl)
 	// get the string discord id
 	discordId, _ := strconv.Atoi(discordUser.ID)
 	// setup the payload
