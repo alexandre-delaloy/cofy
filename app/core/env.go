@@ -1,3 +1,3 @@
-package core 
+package core
 
-var ApiUrl string = "http://cofy_api:3003"
+var ApiUrl string = "http://cofy_api:3333"
