@@ -1,10 +1,7 @@
 package commands
 
 import (
-	"fmt"
-
 	"github.com/blyndusk/cofy/app/core"
-	"github.com/blyndusk/cofy/app/helpers"
 	"github.com/blyndusk/cofy/app/services"
 
 	"github.com/bwmarrin/discordgo"
@@ -19,7 +16,7 @@ func DevCommandHandler(s *discordgo.Session, m *discordgo.MessageCreate) {
 	cmd := devCommand{
 		base: core.BaseCommand{
 			Name:        "dev",
-			Aliases:     []string{"dev", "d", "!"},
+			Aliases:     []string{"dev", "!"},
 			Description: "Developper stuff",
 		},
 		stringResponse: "API: http://localhost:3003\nADM: http://localhost:3002",
@@ -34,11 +31,8 @@ func DevCommandHandler(s *discordgo.Session, m *discordgo.MessageCreate) {
 }
 
 func (cmd devCommand) Execute(s *discordgo.Session, m *discordgo.MessageCreate) {
-	// s.ChannelMessageSend(m.ChannelID, cmd.stringResponse)
-	for i:=0;i<11;i++ {
-		s.ChannelMessageSend(m.ChannelID, fmt.Sprintf("%d - %f", i,  helpers.GetXpFromLevel(i)))
+	s.ChannelMessageSend(m.ChannelID, cmd.stringResponse)
 
-	}
 }
 
 func (cmd devCommand) Help(s *discordgo.Session, m *discordgo.MessageCreate) {

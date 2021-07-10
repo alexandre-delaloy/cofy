@@ -7,6 +7,8 @@ import (
 
 func Setup(r *gin.Engine) {
 	usersRoute(r)
+	drinksRoute(r)
+	r.GET("/load_fixtures", controllers.LoadData)
 }
 
 func usersRoute(r *gin.Engine) {
@@ -18,4 +20,15 @@ func usersRoute(r *gin.Engine) {
 	r.PUT("/users/:discord_id", controllers.UpdateUser)
 
 	r.DELETE("/users/:discord_id", controllers.DeleteUser)
+}
+
+func drinksRoute(r *gin.Engine) {
+	r.POST("/drinks", controllers.CreateDrink)
+
+	r.GET("/drinks", controllers.GetAllDrinks)
+	r.GET("/drinks/:id", controllers.GetDrinkById)
+
+	r.PUT("/drinks/:id", controllers.UpdateDrink)
+
+	r.DELETE("/drinks/:id", controllers.DeleteDrink)
 }

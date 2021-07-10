@@ -9,19 +9,20 @@ import (
 )
 
 func EmbedViewProfile(s *discordgo.Session, m *discordgo.MessageCreate, user core.User, discordUser *discordgo.User) {
-	XpAway :=int(GetXpFromLevel(user.Level + 1) - float64(user.Xp))
-	diff := 100 - (XpAway * 100) / int(GetXpFromLevel(user.Level + 1) - GetXpFromLevel(user.Level))
+	XpAway := int(GetXpFromLevel(user.Level+1) - float64(user.Xp))
+	diff := 100 - (XpAway*100)/int(GetXpFromLevel(user.Level+1)-GetXpFromLevel(user.Level))
 
 	s.ChannelMessageSendEmbed(m.ChannelID, &discordgo.MessageEmbed{
 		Color:       1752220,
 		Title:       fmt.Sprintf("%s's Cofy profile", discordUser.Username),
-		Description:  discordUser.Discriminator,
+		Description: discordUser.Discriminator,
 		Thumbnail:   &discordgo.MessageEmbedThumbnail{URL: discordUser.AvatarURL(""), Width: 10, Height: 10},
 		Fields: []*discordgo.MessageEmbedField{
-			{Name: ":medal: Level:", Value: strconv.Itoa(user.Level)},
-			{Name: ":trophy: Next level:", Value: fmt.Sprintf("%dxp away (%d%%)", XpAway, diff)},
-			{Name: ":coin: CF:", Value: strconv.Itoa(user.Coins)},
-			{Name: ":chart_with_upwards_trend: XP:", Value: strconv.Itoa(user.Xp)},
+			{Name: ":medal: Level:", Value: strconv.Itoa(user.Level), Inline: true},
+			{Name: ":trophy: Next level:", Value: fmt.Sprintf("%dxp left (%d%%)", XpAway, diff), Inline: true},
+			{Name: ":coffee:", Value: "Coffees"},
+			{Name: ":coin: CF:", Value: strconv.Itoa(user.Coins), Inline: true},
+			{Name: ":chart_with_upwards_trend: XP:", Value: strconv.Itoa(user.Xp), Inline: true},
 		},
 		Footer: &discordgo.MessageEmbedFooter{Text: fmt.Sprintf("Member since %s", user.CreatedAt.Format("01-02-2006"))},
 	})
@@ -62,5 +63,16 @@ func EmbedViewInfos(s *discordgo.Session, m *discordgo.MessageCreate) {
 			{Name: ":chart_with_upwards_trend: XP:", Value: "Each time you send a message, you gain XP. XP makes you level up. Levels are used to unlock new coffee."},
 		},
 		Footer: &discordgo.MessageEmbedFooter{Text: "You can check my source code at https://github.com/blyndusk/cofy"},
+	})
+}
+
+func EmbedViewDrinks(s *discordgo.Session, m *discordgo.MessageCreate, fields []*discordgo.MessageEmbedField) {
+	s.ChannelMessageSendEmbed(m.ChannelID, &discordgo.MessageEmbed{
+		Color:       1752220,
+		Title:       "Drinks Shop",
+		Description: "Here you will see all Cofy drinks. You can buy them according to your level",
+		Thumbnail:   &discordgo.MessageEmbedThumbnail{URL: s.State.User.AvatarURL(""), Width: 6, Height: 6},
+		Fields:      fields,
+		// Footer: &discordgo.MessageEmbedFooter{Text: fmt.Sprintf("Member since %s", user.CreatedAt.Format("01-02-2006"))},
 	})
 }

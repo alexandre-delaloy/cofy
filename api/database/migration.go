@@ -6,6 +6,6 @@ import (
 )
 
 func Migrate() {
-	_ = Db.AutoMigrate(&models.User{})
+	_ = Db.AutoMigrate(&models.User{}, &models.Drinks{})
 	logrus.Info("Migrations done !")
 }

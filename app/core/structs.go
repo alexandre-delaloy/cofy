@@ -17,3 +17,13 @@ type Gains struct {
 	Xp    int `json:"xp"`
 	Level int `json:"level"`
 }
+
+type Drink struct {
+	Id            uint   `json:"id"`
+	Name          string `json:"name"`
+	Emoji         string `json:"emoji"`
+	Price         uint   `json:"price"`
+	RequiredLevel uint   `json:"required_level"`
+}
+
+type Drinks []Drink

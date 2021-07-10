@@ -66,6 +66,7 @@ func setupSession() {
 	helpers.ExitOnError("Error while connection,", err)
 	// Wait here until CTRL-C or other term signal is received.
 	log.Info("[BOT] :: UP :: [BOT]")
+
 	sc := make(chan os.Signal, 1)
 	signal.Notify(sc, syscall.SIGINT, syscall.SIGTERM, os.Interrupt, os.Kill)
 	<-sc
@@ -78,20 +79,21 @@ func messageCreationHandler(s *discordgo.Session, m *discordgo.MessageCreate) {
 	if m.Author.ID == s.State.User.ID {
 		return
 	}
+	// systematically get user each time someone create a message
+	user := middlewares.GetUser(s, m.Author.ID)
 	// if the message is not a command
 	if !strings.HasPrefix(m.Content, core.Prefix) {
-		// systematically get user each time someone create a message
-		user := middlewares.GetUser(s, m.Author.ID)
 		// if the user is not found, create a new user in db
 		services.HandleUserNotFound(s, m, user)
 		// then update gains
-		services.HandleGains(s, m, user)
 	} else {
 		// setup command handlers
 		commands.ProfileCommandHandler(s, m)
 		commands.InfoCommandHandler(s, m)
+		commands.DrinksCommandHandler(s, m)
 		commands.DevCommandHandler(s, m)
 	}
+	services.HandleGains(s, m, user)
 }
 
 func MessageReactionHandler(s *discordgo.Session, m *discordgo.MessageCreate) {

@@ -39,7 +39,7 @@ func ProfileCommandHandler(s *discordgo.Session, m *discordgo.MessageCreate) {
 
 // execute method
 func (cmd profileCommand) Execute(s *discordgo.Session, m *discordgo.MessageCreate) {
-	// systematically get user each time someone createw a message
+	// get the user
 	user := middlewares.GetUser(s, m.Author.ID)
 	// if the id of the user is not the author id, user doesnt exist
 	if strconv.Itoa(user.DiscordId) != m.Author.ID {
